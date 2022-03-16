@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Button from 'primevue/button'
 import { useCounterStore } from '../stores/counter'
 
 const props = defineProps<{
@@ -28,9 +29,9 @@ const counter = useCounterStore()
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
   </p>
 
-  <button type="button" @click="counter.incrementCount">
+  <Button type="button" @click="counter.incrementCount">
     count is: {{ counter.count }}
-  </button>
+  </Button>
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
