@@ -1,4 +1,3 @@
-// @ts-check
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 export const useCounterStore = defineStore({
