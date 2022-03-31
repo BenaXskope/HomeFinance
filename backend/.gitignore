@@ -7,5 +7,3 @@ config.py
 db.sqlite3
 /static
 /media
-/account/migrations/
-/users/migrations/
