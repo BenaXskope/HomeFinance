@@ -5,11 +5,9 @@
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <router-view />
+  <div>
+    <router-view />
+  </div>
 </template>
 <style lang="scss">
-html {
-    font-size: 16px;
-}
 </style>

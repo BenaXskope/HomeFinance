@@ -1,0 +1,34 @@
+@import "fonts.scss";
+@import "variables.scss";
+$inputBorder: 4px solid #fff;
+
+body {
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 24px;
+}
+
+.blur {
+  filter: blur(8px);
+}
+
+.translate-x-50 {
+  transform: translateX(50%);
+}
+.-translate-x-25 {
+  transform: translateX(-25%);
+}
+.translate-y-50 {
+  transform: translateY(50%);
+}
+.-translate-y-50 {
+  transform: translateY(-50%);
+}
+
+.p-inputtext {
+  border: none;
+  border-bottom: 0.15rem solid #D3DFE7;
+}
+
+.p-button {
+  background-color: var(--primary-color);
+}
