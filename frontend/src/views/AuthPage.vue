@@ -20,6 +20,7 @@ const activeTabIndex = ref(0)
       h-screen
       grid
       grid-nogutter
+      justify-content-center
       align-items-center
       p-4
       md:p-8
@@ -30,38 +31,40 @@ const activeTabIndex = ref(0)
   >
     <div
       class="
-        w-full
+        col-11
+        xl:col-10
         h-full
         flex
         flex-column
         xl:flex-row
         justify-content-center
         xl:align-items-center
+        xl:justify-content-start
       "
     >
       <div
         class="
           xl:h-full
-          col-12
-          xl:col-7
-          xl:-mr-6
+          xl:col-8
           flex
-          justify-content-start
-          align-items-center
+          flex-column
+          justify-content-center
+          align-items-start
           border-round
           bg-primary
-          p-6
-          xl:pl-7
-          xl:py-8
+          p-4
+          pb-5
+          md:p-6
           xl:text-right
+          font-semibold
         "
       >
-        <div class="xl:col-8 flex flex-column font-semibold">
+        <div class="xl:col-10 xl:pr-6">
           <div
             class="
               mb-2
               xl:mb-8
-              text-6xl
+              text-5xl
               xl:text-7xl
             "
           >
@@ -79,11 +82,11 @@ const activeTabIndex = ref(0)
       </div>
       <div
         class="
-          xl:col-5
+          xl:col-6
           h-30rem
           -mt-4
+          xl:-translate-x-50
           xl:mt-0
-          xl:-ml-6
           flex
           justify-content-center
           py-6

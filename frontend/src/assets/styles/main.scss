@@ -1,11 +1,20 @@
 @import "fonts.scss";
 @import "variables.scss";
+@import 'primeflex/primeflex.scss';
+
 $inputBorder: 4px solid #fff;
 
 body {
   padding: 0;
   margin: 0;
 }
+
+$custom-translate-props: (
+    'translate-x-50': 'translateX(50%)',
+    '-translate-x-50': 'translateX(-30%)',
+);
+
+@include style-class('transform', $custom-translate-props, true);
 
 html {
   font-family: 'Roboto', sans-serif !important;
@@ -25,6 +34,10 @@ html {
 .p-inputtext {
   border: none;
   border-bottom: 0.15rem solid #D3DFE7;
+  
+  &:not(:focus) {
+    border-radius: 0;
+  }
 }
 
 .p-button {
