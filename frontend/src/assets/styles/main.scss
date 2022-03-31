@@ -3,25 +3,23 @@
 $inputBorder: 4px solid #fff;
 
 body {
+  padding: 0;
+  margin: 0;
+}
+
+html {
   font-family: 'Roboto', sans-serif !important;
-  font-size: 24px;
+  font-size: 14px;
+}
+
+@media screen and (min-width: 1200px) {
+  html {
+    font-size: 16px;
+  }
 }
 
 .blur {
   filter: blur(8px);
-}
-
-.translate-x-50 {
-  transform: translateX(50%);
-}
-.-translate-x-25 {
-  transform: translateX(-25%);
-}
-.translate-y-50 {
-  transform: translateY(50%);
-}
-.-translate-y-50 {
-  transform: translateY(-50%);
 }
 
 .p-inputtext {

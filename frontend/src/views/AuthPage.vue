@@ -16,44 +16,61 @@ const activeTabIndex = ref(0)
 <template>
   <div
     class="
-      grid
-      grid-nogutter
       w-screen
       h-screen
+      grid
+      grid-nogutter
       align-items-center
-      p-8
+      p-4
+      md:p-8
       bg-no-repeat
       bg-cover
     "
     :style="{ backgroundImage: `url(${backgroundImg})` }"
   >
-    <div class="flex align-items-center w-full h-full">
+    <div
+      class="
+        w-full
+        h-full
+        flex
+        flex-column
+        xl:flex-row
+        justify-content-center
+        xl:align-items-center
+      "
+    >
       <div
         class="
-          h-full
+          xl:h-full
+          col-12
+          xl:col-7
+          xl:-mr-6
           flex
           justify-content-start
           align-items-center
           border-round
           bg-primary
-          pl-7
-          py-8
-          text-right
-          col-7
+          p-6
+          xl:pl-7
+          xl:py-8
+          xl:text-right
         "
       >
-        <div class="col-8 flex flex-column font-semibold">
+        <div class="xl:col-8 flex flex-column font-semibold">
           <div
             class="
-              text-7xl
-              mb-8
+              mb-2
+              xl:mb-8
+              text-6xl
+              xl:text-7xl
             "
           >
             HomeFinance
           </div>
           <div
             class="
-              text-4xl
+              text-xl
+              xl:text-4xl
             "
           >
             Создано для&nbsp;оптимизации ваших&nbsp;финансов
@@ -62,12 +79,14 @@ const activeTabIndex = ref(0)
       </div>
       <div
         class="
+          xl:col-5
           h-30rem
-          col-5
-          -translate-x-25
+          -mt-4
+          xl:mt-0
+          xl:-ml-6
           flex
           justify-content-center
-          pt-6
+          py-6
           bg-white
           border-round
         "
@@ -92,12 +111,17 @@ const activeTabIndex = ref(0)
 </template>
 <style lang="scss" scoped>
 ::v-deep(.tabs) {
+
+  .p-tabview-selected {
+    border: none;
+  }
   .p-tabview-nav {
     justify-content: center;
     border-bottom: none;
 
     .p-tabview-nav-link  {
-      border-width: 0px;
+      border: none;
+      box-shadow: none !important;
     }
   }
 }
