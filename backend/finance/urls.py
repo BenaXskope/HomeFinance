@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('account.urls')),
     path('doc/', schema_view),
-    path('silk/', include('silk.urls', namespace='silk'))
+    path('silk/', include('silk.urls', namespace='silk')),
+    path('', include('users.urls'))
 ]
