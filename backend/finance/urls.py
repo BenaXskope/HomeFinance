@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
 
+
 schema_view = get_swagger_view(title='Finance API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('account.urls')),
     path('doc/', schema_view),
-    path('silk/', include('silk.urls', namespace='silk'))
+    path('silk/', include('silk.urls', namespace='silk')),
+    path('users/', include('users.urls')),
 ]
