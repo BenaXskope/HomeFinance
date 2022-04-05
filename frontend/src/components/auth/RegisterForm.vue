@@ -15,7 +15,7 @@ const registerData = reactive({
 
 </script>
 <template>
-  <form class="flex flex-column align-items-center px-4" @submit.prevent="() => 1 ">
+  <form class="flex flex-column align-items-center" @submit.prevent="() => 1 ">
     <span class="p-float-label p-inputtext-lg mb-5 w-full">
       <InputText id="email" v-model="registerData.email" class="w-full" type="text" />
       <label for="email">Email</label>

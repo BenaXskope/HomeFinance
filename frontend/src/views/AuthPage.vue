@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
+import { computed, ref } from 'vue'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import Button from 'primevue/button'
-
 import LoginForm from '@components/auth/LoginForm.vue'
 import RegisterForm from '@components/auth/RegisterForm.vue'
-
 import backgroundImg from '@assets/images/login-background.jpg'
 
-const activeTabIndex = ref(0)
+const activeTabName = ref<'LoginForm' | 'RegisterForm'>('LoginForm')
+const changeTab = (componentName: typeof activeTabName.value) => activeTabName.value = componentName
+
+const tabs = {
+  LoginForm,
+  RegisterForm,
+}
+const activeComponent = computed(() => tabs[activeTabName.value])
 
 </script>
 <template>
@@ -83,50 +87,57 @@ const activeTabIndex = ref(0)
       <div
         class="
           xl:col-6
-          h-30rem
           -mt-4
           xl:-translate-x-50
           xl:mt-0
+          h-30rem
           flex
-          justify-content-center
-          py-6
+          flex-column
+          p-6
           bg-white
           border-round
         "
       >
-        <TabView v-model:activeIndex="activeTabIndex" class="tabs w-full" lazy>
-          <TabPanel>
-            <template #header>
-              <Button :class="{'text-900 bg-white border-none': activeTabIndex !== 0}" label="Вход" class="p-button-rounded" />
-            </template>
-            <LoginForm />
-          </TabPanel>
-          <TabPanel>
-            <template #header>
-              <Button :class="{'text-900 bg-white border-none': activeTabIndex !== 1}" label="Регистрация" class="p-button-rounded" />
-            </template>
-            <RegisterForm />
-          </TabPanel>
-        </TabView>
+        <div
+          class="
+            mb-5
+            flex
+            justify-content-around
+          "
+        >
+          <Button
+            :class="{'text-900 bg-white border-none': activeTabName !== 'LoginForm'}"
+            label="Вход"
+            class="p-button-rounded"
+            @click="changeTab('LoginForm')"
+          />
+          <Button
+            :class="{'text-900 bg-white border-none': activeTabName !== 'RegisterForm'}"
+            label="Регистрация"
+            class="p-button-rounded"
+            @click="changeTab('RegisterForm')"
+          />
+        </div>
+        <Transition name="slide-up" mode="out-in">
+          <component :is="activeComponent" />
+        </Transition>
       </div>
     </div>
   </div>
 </template>
 <style lang="scss" scoped>
-::v-deep(.tabs) {
-
-  .p-tabview-selected {
-    border: none;
-  }
-  .p-tabview-nav {
-    justify-content: center;
-    border-bottom: none;
-
-    .p-tabview-nav-link  {
-      border: none;
-      box-shadow: none !important;
-    }
-  }
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
 }
 
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
 </style>

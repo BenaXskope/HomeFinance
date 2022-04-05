@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 
-import 'primevue/resources/themes/saga-blue/theme.css'
+import 'primevue/resources/themes/lara-light-indigo/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 
@@ -11,4 +11,4 @@ import '@assets/styles/main.scss'
 import App from './App.vue'
 import router from './router'
 
-createApp(App).use(PrimeVue).use(router).use(createPinia()).mount('#app')
+createApp(App).use(PrimeVue, { ripple: true }).use(router).use(createPinia()).mount('#app')
