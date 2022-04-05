@@ -2,6 +2,7 @@
 *.pyc
 __ pycache __
 config.py
+venv
 ### Django ###
 *.log
 db.sqlite3
