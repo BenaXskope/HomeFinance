@@ -12,10 +12,12 @@
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src"],
-      "@components/*": ["./src/components"],
-      "@views/*": ["./src/views"]
+      "@/*": ["./*"],
+      "@components/*": ["components/*"],
+      "@views/*": ["views/*"],
+      "@api/*": ["api/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
