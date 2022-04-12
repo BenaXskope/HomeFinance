@@ -21,7 +21,8 @@ schema_view = get_swagger_view(title='Finance API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('account.urls')),
+    path('api/', include('account.urls')),
     path('doc/', schema_view),
-    path('silk/', include('silk.urls', namespace='silk'))
+    path('silk/', include('silk.urls', namespace='silk')),
+    path('api/', include('users.urls'))
 ]

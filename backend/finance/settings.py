@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-04n7-u2e+9ycu4ah3@c%4$(*xj@bws-^)*_xi1xeub5hep+yq1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+    'django_rest_passwordreset',
+    'django_celery_beat',
     'rest_framework_swagger',
     'rest_framework',
     'silk',
@@ -48,6 +50,15 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+#EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = 'server.python.tmp'
+EMAIL_HOST_PASSWORD = 'server.python.tmp.07122020'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -146,12 +157,24 @@ REST_FRAMEWORK = {
         #'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny',
     ),
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework.authentication.TokenAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
+
+
+from celery.schedules import crontab
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_BEAT_SCHEDULE = {
+}
+
+
+
+
+

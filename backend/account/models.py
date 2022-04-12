@@ -6,7 +6,7 @@ class Currency(models.Model):
     num_code = models.IntegerField(db_index=True, unique=True, verbose_name='Цифр. код')
     let_code = models.CharField(max_length=3, verbose_name='Букв. код')
     units = models.IntegerField(verbose_name='Единиц')
-    name = models.CharField(max_length=30, verbose_name="Наименование")
+    name = models.CharField(max_length=50, verbose_name="Наименование")
     rate = models.DecimalField(verbose_name="Курс", max_digits=8, decimal_places=4, blank=False, default=0)
 
     def __str__(self):

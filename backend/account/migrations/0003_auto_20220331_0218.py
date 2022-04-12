@@ -2,19 +2,19 @@
 
 from django.db import migrations
 
+
 def account(apps, schema_editor):
     # Типы - наш перечень, который будет вставлен в БД
     # Попросим Django вытащить модель - класс ClientTypes из аппликейшена user_profile
     Account = apps.get_model("account", "Account")
     CustomUser = apps.get_model("users", "CustomUser")
-    Currency = apps.get_model("account", "Currency")
+    # Currency = apps.get_model("account", "Currency")
 
     # Теперь в цикле создаём экземпляры класса с указанными параметрами и сохраняем их
     for t in range(100):
         ac = Account(user=CustomUser.objects.get(pk=t+1), total=t*100)
         ac.save()
-        ac.currencies.add(Currency.objects.get(pk=1))
-        #ac.save()
+
 
 class Migration(migrations.Migration):
 
