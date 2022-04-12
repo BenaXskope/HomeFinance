@@ -16,14 +16,14 @@ class CurrencySerializer(FlexFieldsModelSerializer):
 
 
 class AccountSerializer(FlexFieldsModelSerializer):
-    currencies = CurrencySerializer(many=True)
 
     class Meta:
         model = models.Account
-        fields = ['user', 'total', 'currencies']
+        fields = ['id', 'user', 'total', 'currencies', ]
         expandable_fields = {
             'currencies': (CurrencySerializer, {'many': True})
         }
+        # read_only_fields = ['user', 'category']
 
 
 class CategorySerializer(FlexFieldsModelSerializer):

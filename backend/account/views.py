@@ -1,3 +1,4 @@
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from . import serializers
 from . import models
@@ -24,9 +25,11 @@ class CurrencyUpdate(APIView):
             rate = rate.replace(',', '.')
             rate = float(rate)
             # print(numCode, let_code, units, name, rate)
-            cur = models.Currency(num_code=num_code, let_code=let_code, units=units, name=name, rate=rate)
+            cur = models.Currency.objects.get(num_code=num_code)
+            cur.rate = rate
             cur.save()
-            return 200
+            print('Currencies updated')
+            return Response(status=200)
 
 
 class CurrencyView(ReadOnlyModelViewSet):
@@ -39,7 +42,8 @@ class AccountView(FlexFieldsMixin, ModelViewSet):
     permit_list_expands = ['user', 'currencies', 'category', 'payout', 'payout.category']
 
     def get_queryset(self):
-        queryset = models.Account.objects.all()
+        user = self.request.user
+        queryset = models.Account.objects.filter(user=user)
 
         if is_expanded(self.request, 'user'):
             queryset = queryset.select_related('user')
@@ -58,6 +62,37 @@ class AccountView(FlexFieldsMixin, ModelViewSet):
 
         return queryset
 
+    def list(self, request, *args, **kwargs):
+        user = self.request.user
+        account = models.Account.objects.get(user=user)
+        serializer = self.get_serializer(account)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.request.user
+        account = models.Account.objects.get(user=user)
+        serializer = self.get_serializer(account)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        if models.Account.objects.get(user=request.user):
+            return Response({"detail": "Account already exist"})
+        request.data['user'] = request.user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
+
+    def partial_update(self, request, pk, *args, **kwargs):
+        currencies_ids = request.data['currencies']
+        currencies_ids = currencies_ids.split(',')
+        account = models.Account.objects.get(pk=pk)
+        for cur_id in currencies_ids:
+            account.currencies.add(models.Currency.objects.get(pk=cur_id))
+        serializer = self.get_serializer(account)
+        return Response(serializer.data)
+
 
 class CategoryView(FlexFieldsMixin, ModelViewSet):
     serializer_class = serializers.CategorySerializer
@@ -74,6 +109,14 @@ class CategoryView(FlexFieldsMixin, ModelViewSet):
             queryset = queryset.prefetch_related('payout')
 
         return queryset
+
+    def create(self, request, *args, **kwargs):
+        request.data['account'] = request.user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
 
 
 class PayOutView(FlexFieldsMixin, ModelViewSet):
