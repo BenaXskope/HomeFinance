@@ -11,8 +11,8 @@ class CurrencySerializer(FlexFieldsModelSerializer):
         model = models.Currency
         fields = '__all__'
 
-    def create(self, validated_data):
-        return models.Currency.objects.create(**validated_data)
+    # def create(self, validated_data):
+    #     return models.Currency.objects.create(**validated_data)
 
 
 class AccountSerializer(FlexFieldsModelSerializer):

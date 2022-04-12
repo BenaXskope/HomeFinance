@@ -1,6 +1,7 @@
 from django.conf import settings
 from rest_framework import generics, permissions
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, ChangePasswordSerializer
+from .models import CustomUser
 import json
 from django.contrib.auth import authenticate, login
 from django.views.decorators.http import require_POST
@@ -52,6 +53,33 @@ class RegisterView(generics.CreateAPIView):
         user = serializer.save()
         user.backend = settings.AUTHENTICATION_BACKENDS[0]
         login(self.request, user)
+
+
+class ChangePasswordView(generics.UpdateAPIView):
+    """
+    An endpoint for changing password.
+    """
+    serializer_class = ChangePasswordSerializer
+    model = CustomUser
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            response = {
+                'message': 'Password updated successfully',
+                'data': []
+            }
+
+            return Response({'message': 'Password updated successfully'}, 200)
+
+        return Response(serializer.errors, 400)
 
 
 class CheckAuth(APIView):

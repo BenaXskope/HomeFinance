@@ -10,5 +10,6 @@ router.register(r'currency', views.CurrencyView, basename='Currency')
 router.register(r'payout', views.PayOutView, basename='PayOut')
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('currency_update/', views.CurrencyUpdate().as_view(), name='UpdateCur')
 ]
