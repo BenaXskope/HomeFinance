@@ -12,6 +12,8 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 
+from account.models import Account
+
 
 @ensure_csrf_cookie
 def set_csrf_token(request):
@@ -51,6 +53,8 @@ class RegisterView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
+        acc = Account(user=user, total=0)
+        acc.save()
         user.backend = settings.AUTHENTICATION_BACKENDS[0]
         login(self.request, user)
 
