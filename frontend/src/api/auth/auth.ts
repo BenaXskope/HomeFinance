@@ -49,7 +49,7 @@ RegistrationSuccessDTO
     RegistrationSuccessDTO,
     AxiosResponse<RegistrationSuccessDTO, RegisterUserRequestDTO>,
     RegisterUserRequestDTO
-    >(`/api/${URL_CONFIG.AUTH.REGISTER}`, { email, username, password, password2: passwordConfirm })
+    >(`${URL_CONFIG.AUTH.REGISTER}/`, { email, username, password, password2: passwordConfirm }, { withCredentials: true })
 
     return right(response.data)
   }
@@ -61,4 +61,40 @@ RegistrationSuccessDTO
 
     throw error
   }
+}
+
+export const InvalidCredentialsError = Literal('Invalid credentials.')
+
+export const authUser = async(credentials: {
+  username: string
+  password: string
+}):
+Promise<
+Either<
+| Static<typeof InvalidCredentialsError>,
+true
+>> => {
+  try {
+    await axios.get('api/csrf/')
+    await axios.post(`${URL_CONFIG.AUTH.LOGIN}/`, credentials, {
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+    })
+    return right(true)
+  }
+  catch (error: AxiosError | unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.response)
+        return left(InvalidCredentialsError.value)
+    }
+
+    throw error
+  }
+}
+
+function getCookie(name: string) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop()!.split(';').shift()
 }

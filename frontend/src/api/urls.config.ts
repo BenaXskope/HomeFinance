@@ -1,6 +1,8 @@
+export const BASE_URL = 'api'
+
 export default {
-  BASE_URL: 'api',
   AUTH: {
-    REGISTER: 'register/',
+    REGISTER: `${BASE_URL}/register`,
+    LOGIN: `${BASE_URL}/login`,
   },
 }
