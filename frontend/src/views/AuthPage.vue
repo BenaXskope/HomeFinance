@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
 import Button from 'primevue/button'
 import LoginForm from '@components/auth/LoginForm.vue'
 import RegisterForm from '@components/auth/RegisterForm.vue'

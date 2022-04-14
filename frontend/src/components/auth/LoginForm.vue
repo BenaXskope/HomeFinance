@@ -1,37 +1,46 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import type { InferType } from 'yup'
+import { object, string } from 'yup'
+import { useField, useForm } from 'vee-validate'
+import { useRouter } from 'vue-router'
 
-const handleSubmit = () => {
-  console.log('submitted')
-}
+const schema = object({
+  email: string().email('Введите корректный email').required('Обязательное поле'),
+  password: string().required('Обязательное поле'),
+})
 
-const loginCredentials = reactive({
-  email: undefined,
-  password: undefined,
+const { handleSubmit } = useForm<InferType<typeof schema>>({
+  validationSchema: schema,
+})
+
+const { value: email, errorMessage: emailError } = useField<string>('email')
+const { value: password, errorMessage: passwordError } = useField<string>('password')
+
+const { push } = useRouter()
+
+const onSubmit = handleSubmit(async(values) => {
+  push('/')
 })
 
 </script>
 <template>
-  <form class="flex flex-column align-items-center" @submit.prevent="() => 1 ">
-    <span class="p-float-label p-inputtext-lg mb-5 w-full">
-      <InputText id="email" v-model="loginCredentials.email" class="w-full" type="text" />
-      <label for="email">Email</label>
-    </span>
-    <span class="p-float-label p-inputtext-lg mb-5 w-full">
-      <InputText id="password" v-model="loginCredentials.password" class="w-full" type="password" />
-      <label for="password">Пароль</label>
-    </span>
-    <Button label="Войти" class="p-button-rounded" type="submit" @click="handleSubmit" />
+  <form class="flex flex-column align-items-center h-full" @submit.prevent="onSubmit">
+    <div class="field w-full">
+      <span class="p-float-label p-inputtext-lg mb-4">
+        <InputText id="email" v-model="email" name="email" class="w-full" type="text" />
+        <div id="username2-help" class="p-error h-1rem text-sm">{{ emailError }}</div>
+        <label for="email">Email</label>
+      </span>
+      <span class="p-float-label p-inputtext-lg">
+        <InputText id="password" v-model="password" class="w-full" type="password" />
+        <div id="username2-help" class="p-error h-1rem text-sm">{{ passwordError }}</div>
+        <label for="password">Пароль</label>
+      </span>
+    </div>
+    <div>
+      <Button label="Войти" class="p-button-rounded" type="submit" />
+    </div>
   </form>
 </template>
-<style lang="scss">
-.component-fade-enter-active, .component-fade-leave-active {
-  transition: opacity .3s ease;
-}
-.component-fade-enter, .component-fade-leave-to
-/* .component-fade-leave-active до версии 2.1.8 */ {
-  opacity: 0;
-}
-</style>
