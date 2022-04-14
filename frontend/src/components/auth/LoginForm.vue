@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import { useToast } from 'primevue/usetoast'
+import Toast from 'primevue/toast'
 import type { InferType } from 'yup'
 import { object, string } from 'yup'
 import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
-
+import { authUser } from '@api/auth/auth'
 const schema = object({
-  email: string().email('Введите корректный email').required('Обязательное поле'),
+  username: string().required('Обязательное поле'),
   password: string().required('Обязательное поле'),
 })
 
@@ -15,13 +17,19 @@ const { handleSubmit } = useForm<InferType<typeof schema>>({
   validationSchema: schema,
 })
 
-const { value: email, errorMessage: emailError } = useField<string>('email')
+const { value: username, errorMessage: usernameError } = useField<string>('username')
 const { value: password, errorMessage: passwordError } = useField<string>('password')
 
 const { push } = useRouter()
+const toast = useToast()
 
 const onSubmit = handleSubmit(async(values) => {
-  push('/')
+  const loginResult = await authUser(values)
+  if (loginResult.isRight()) { push('/') }
+  else {
+    const error = loginResult.value
+    toast.add({ severity: 'error', summary: 'Ошибка', detail: error, life: 3000 })
+  }
 })
 
 </script>
@@ -29,9 +37,9 @@ const onSubmit = handleSubmit(async(values) => {
   <form class="flex flex-column align-items-center h-full" @submit.prevent="onSubmit">
     <div class="field w-full">
       <span class="p-float-label p-inputtext-lg mb-4">
-        <InputText id="email" v-model="email" name="email" class="w-full" type="text" />
-        <div id="username2-help" class="p-error h-1rem text-sm">{{ emailError }}</div>
-        <label for="email">Email</label>
+        <InputText id="username" v-model="username" name="username" class="w-full" type="text" />
+        <div id="username2-help" class="p-error h-1rem text-sm">{{ usernameError }}</div>
+        <label for="username">Логин</label>
       </span>
       <span class="p-float-label p-inputtext-lg">
         <InputText id="password" v-model="password" class="w-full" type="password" />
@@ -42,5 +50,6 @@ const onSubmit = handleSubmit(async(values) => {
     <div>
       <Button label="Войти" class="p-button-rounded" type="submit" />
     </div>
+    <Toast position="bottom-right" />
   </form>
 </template>

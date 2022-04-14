@@ -88,7 +88,6 @@ const activeComponent = computed(() => tabs[activeTabName.value])
           -mt-4
           xl:-translate-x-50
           xl:mt-0
-          h-30rem
           flex
           flex-column
           p-6
