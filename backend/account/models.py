@@ -35,6 +35,7 @@ class Category(models.Model):
     title = models.CharField(max_length=30, verbose_name="Наименование")
     color = models.CharField(max_length=7, verbose_name='Цвет', default='#000000')
     account = models.ForeignKey(Account, verbose_name="Аккаунт", on_delete=models.CASCADE, related_name="category")
+    prognosis = models.DecimalField(verbose_name="Прогноз", max_digits=20, decimal_places=2, blank=False, default=0)
 
     def __str__(self):
         return self.title
@@ -50,6 +51,7 @@ class PayOut(models.Model):
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="payout")
     value = models.DecimalField(verbose_name="Сумма", max_digits=20, decimal_places=2, blank=False, default=0)
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    type = models.BooleanField(verbose_name="Тип", blank=False, default=True)
 
     def __str__(self):
         return self.account + " " + self.creation_date

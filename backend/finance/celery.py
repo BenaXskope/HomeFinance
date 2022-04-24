@@ -12,6 +12,14 @@ app.conf.broker_url = 'redis://localhost:6379/0'
 app.autodiscover_tasks()
 
 
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')
+# celery -A finance beat -l debug - to run celery
+# celery -A finance beat
+# To run without debug function
+@app.on_after_finalize.connect
+def setup_periodic_tasks(sender, **kwargs):
+    from account.tasks import update_rate
+    sender.add_periodic_task(12*60*60.0, update_rate())
+
+
+
+
