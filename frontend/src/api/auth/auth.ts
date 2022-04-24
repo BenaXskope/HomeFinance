@@ -64,10 +64,8 @@ RegistrationSuccessDTO
   }
   catch (error: AxiosError | unknown) {
     if (axiosUtils.isAxiosError(error)) {
-      if (error.response) {
-        const a = getErrorsList(error.response.data as any as Record<string, string[]>, possibleRegisterErrors)
-        return left(a)
-      }
+      if (error.response)
+        return left(getErrorsList(error.response.data as any as Record<string, string[]>, possibleRegisterErrors))
     }
 
     throw error

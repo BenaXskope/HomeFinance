@@ -6,10 +6,10 @@ type LiteralError<T extends string> = Literal<T>
 type ErrorsUnion<T extends string> = Union<readonly [LiteralError<T>, ...LiteralError<T>[]]>
 type TypedErrors<T extends string> = Array<LiteralError<T> | ErrorsUnion<T>>
 
-export const getErrorsList = <T extends E, E extends string>(errors: ErrorsObject<E>, knownErrors: TypedErrors<T>): Array<T> => {
+export const getErrorsList = <T extends string, E extends T | string>(errors: ErrorsObject<E>, knownErrors: TypedErrors<T>): Array<T> => {
   const flatServerErrors: Array<E> = new Array<E>().concat(...Object.values(errors))
 
-  const handledErrors: T[] = flatServerErrors.filter((errMessage): errMessage is T => knownErrors.some(err => err.guard(errMessage)))
+  const handledErrors: T[] = flatServerErrors.filter(errMessage => knownErrors.some(err => err.guard(errMessage))) as T[]
 
   if (handledErrors.length !== flatServerErrors.length)
     throw new Error ('Unhandled errors')
