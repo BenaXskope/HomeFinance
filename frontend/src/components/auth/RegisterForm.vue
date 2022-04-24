@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
+import { useField, useForm } from 'vee-validate'
 import type { InferType } from 'yup'
 import { object, string, ref as yupRef } from 'yup'
-import { useField, useForm } from 'vee-validate'
-import { useRouter } from 'vue-router'
-import { registerUser } from '@api/auth/auth'
+import { EmailAlreadyRegisteredError, IncorrectEmailError, WeakPasswordError, registerUser } from '@api/auth/auth'
+import { exhaustivenessCheck } from '@/utils/typing'
 
 const schema = object({
   email: string().email('Введите корректный email').required('Обязательное поле'),
@@ -22,24 +23,36 @@ const { handleSubmit } = useForm<InferType<typeof schema>>({
   validationSchema: schema,
 })
 
-const { value: email, errorMessage: emailError } = useField<string>('email')
+const { value: email, errorMessage: emailError, setErrors: setEmailErrors } = useField<string>('email')
 const { value: username, errorMessage: usernameError } = useField<string>('username')
-const { value: password, errorMessage: passwordError } = useField<string>('password')
+const { value: password, errorMessage: passwordError, setErrors: setPasswordErrors } = useField<string>('password')
 const { value: passwordConfirm, errorMessage: passwordConfirmError } = useField<string>('passwordConfirm')
 
 const { push } = useRouter()
 const toast = useToast()
 const onSubmit = handleSubmit(async(values) => {
-  const registerResult = await registerUser({ ...values })
+  try {
+    const registerResult = await registerUser({ ...values })
 
-  if (registerResult.isRight()) {
-    push('/')
+    if (registerResult.isRight()) {
+      push('/')
+    }
+    else {
+      const errors = registerResult.value
+      for (const error of errors) {
+        if (WeakPasswordError.guard(error)) setPasswordErrors('Пароль слишком слабый')
+        else if (EmailAlreadyRegisteredError.guard(error)) setEmailErrors('Пользователь с таким email уже зарегистрирован')
+        else if (IncorrectEmailError.guard(error)) setEmailErrors('Введите корерктный email')
+        else exhaustivenessCheck(error)
+      }
+      toast.add({ severity: 'error', summary: 'Ошибка регистрации', detail: 'Некорректные данные', life: 3000 })
+    }
   }
-  else {
-    const error = registerResult.value
-    toast.add({ severity: 'error', summary: 'Ошибка', detail: error, life: 3000 })
+  catch {
+    toast.add({ severity: 'error', summary: 'Неизвестная ошибка ', life: 3000 })
   }
 })
+
 </script>
 <template>
   <form class="flex flex-column align-items-center h-full" @submit.prevent="onSubmit">

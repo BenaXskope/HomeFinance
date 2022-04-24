@@ -7,7 +7,9 @@ import type { InferType } from 'yup'
 import { object, string } from 'yup'
 import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
-import { authUser } from '@api/auth/auth'
+import { InvalidCredentialsError, authUser } from '@api/auth/auth'
+import { exhaustivenessCheck } from '@/utils/typing'
+
 const schema = object({
   username: string().required('Обязательное поле'),
   password: string().required('Обязательное поле'),
@@ -24,11 +26,19 @@ const { push } = useRouter()
 const toast = useToast()
 
 const onSubmit = handleSubmit(async(values) => {
-  const loginResult = await authUser(values)
-  if (loginResult.isRight()) { push('/') }
-  else {
-    const error = loginResult.value
-    toast.add({ severity: 'error', summary: 'Ошибка', detail: error, life: 3000 })
+  try {
+    const loginResult = await authUser(values)
+
+    if (loginResult.isRight()) { push('/') }
+    else {
+      const error = loginResult.value
+      if (InvalidCredentialsError.guard(error))
+        toast.add({ severity: 'error', summary: 'Ошибка авторизации', detail: 'Неправильный логин или пароль', life: 3000 })
+      else exhaustivenessCheck(error)
+    }
+  }
+  catch {
+    toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Неизвестная ошибка', life: 3000 })
   }
 })
 

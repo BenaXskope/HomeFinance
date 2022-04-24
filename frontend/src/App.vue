@@ -1,12 +1,21 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
+import { ref } from 'vue'
+import ProgressSpinner from 'primevue/progressspinner'
+import { getCsrf } from '@/api/auth/auth'
+import { getCsrfCookie } from '@/utils/cookie'
+
+const loading = ref(false)
+if (!getCsrfCookie()) {
+  loading.value = true
+  getCsrf().then(() => loading.value = false)
+}
 
 </script>
 
 <template>
   <div>
-    <router-view />
+    <ProgressSpinner v-if="loading" />
+    <router-view v-else />
   </div>
 </template>
 <style lang="scss">

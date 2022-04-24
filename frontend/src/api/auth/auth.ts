@@ -1,18 +1,25 @@
-import axios from 'axios'
+import axiosUtils from 'axios'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { AxiosError, AxiosResponse } from 'axios'
 import { left, right } from '@sweet-monads/either'
 import type { Either } from '@sweet-monads/either'
 import type { Static } from 'runtypes'
 import { Literal, Union } from 'runtypes'
+import axios from '@/api'
 import URL_CONFIG from '@/api/urls.config'
+import { getCookie } from '@/utils/cookie'
+import { getErrorsList } from '@/utils/api'
 
 export const WeakPasswordError = Union(
   Literal('This password is too short. It must contain at least 8 characters.'),
   Literal('This password is too common.'),
+  Literal('This password is entirely numeric.'),
 )
+
 export const IncorrectEmailError = Literal('Enter a valid email address.')
 export const EmailAlreadyRegisteredError = Literal('This field must be unique.')
+
+const possibleRegisterErrors = [WeakPasswordError, IncorrectEmailError, EmailAlreadyRegisteredError]
 
 interface RegistrationSuccessDTO {
   email: string
@@ -38,9 +45,11 @@ export const registerUser = async({
   passwordConfirm: string
 }): Promise<
 Either<
+Array<
 | Static<typeof WeakPasswordError>
 | Static<typeof IncorrectEmailError>
-| Static<typeof EmailAlreadyRegisteredError>,
+| Static<typeof EmailAlreadyRegisteredError>
+>,
 RegistrationSuccessDTO
 >
 > => {
@@ -54,9 +63,11 @@ RegistrationSuccessDTO
     return right(response.data)
   }
   catch (error: AxiosError | unknown) {
-    if (axios.isAxiosError(error)) {
-      if (error.response)
-        return left(IncorrectEmailError.value)
+    if (axiosUtils.isAxiosError(error)) {
+      if (error.response) {
+        const a = getErrorsList(error.response.data as any as Record<string, string[]>, possibleRegisterErrors)
+        return left(a)
+      }
     }
 
     throw error
@@ -75,16 +86,15 @@ Either<
 true
 >> => {
   try {
-    await axios.get('api/csrf/')
     await axios.post(`${URL_CONFIG.AUTH.LOGIN}/`, credentials, {
       headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
+        'X-CSRFToken': getCookie('csrftoken')!,
       },
     })
     return right(true)
   }
   catch (error: AxiosError | unknown) {
-    if (axios.isAxiosError(error)) {
+    if (axiosUtils.isAxiosError(error)) {
       if (error.response)
         return left(InvalidCredentialsError.value)
     }
@@ -93,8 +103,12 @@ true
   }
 }
 
-function getCookie(name: string) {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${name}=`)
-  if (parts.length === 2) return parts.pop()!.split(';').shift()
+export const getCsrf = async(): Promise<Either<false, true>> => {
+  try {
+    await axios.get(URL_CONFIG.CSRF)
+    return right(true)
+  }
+  catch {
+    return left(false)
+  }
 }
