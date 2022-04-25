@@ -4,13 +4,13 @@ from .models import CustomUser
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ("id", "username", "last_name", "first_name", "email", "is_staff", "is_superuser")
-    list_display_links = ("username",)
+    list_display = ("id", "email", "is_staff", "is_superuser")
+    list_display_links = ("email",)
     list_editable = ("is_staff", "is_superuser")
 
     fieldsets = (
         (None, {
-            "fields": (("email", "username", "password"),)
+            "fields": (("email", "password"),)
         }),
         (None, {
             "fields": (("last_name", "first_name"),)

@@ -16,7 +16,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'password', 'password2', 'email')
+        fields = ('password', 'password2', 'email')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -26,8 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = CustomUser.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email']
+            email=validated_data['email'],
         )
 
         user.set_password(validated_data['password'])
@@ -70,7 +69,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email')
+        fields = ('email',)
 
     def validate_email(self, value):
         user = self.context['request'].user
@@ -78,15 +77,8 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"email": "This email is already in use."})
         return value
 
-    def validate_username(self, value):
-        user = self.context['request'].user
-        if CustomUser.objects.exclude(pk=user.pk).filter(username=value).exists():
-            raise serializers.ValidationError({"username": "This username is already in use."})
-        return value
-
     def update(self, instance, validated_data):
         instance.email = validated_data['email']
-        instance.username = validated_data['username']
 
         instance.save()
 
