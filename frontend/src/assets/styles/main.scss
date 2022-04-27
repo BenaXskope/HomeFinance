@@ -33,6 +33,16 @@ html {
   font-size: 14px;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 @media screen and (min-width: 1200px) {
   html {
     font-size: 16px;
@@ -43,7 +53,7 @@ html {
   filter: blur(8px);
 }
 
-.p-inputtext {
+.p-inputtext, .p-dropdown {
   border: none;
   border-bottom: 0.15rem solid #D3DFE7;
   
@@ -55,8 +65,4 @@ html {
 .p-button {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
-
-  &:hover {
-    background-color: var(--primary-dark-color) !important;
-  }
 }
