@@ -152,8 +152,8 @@ const handleFastRecordSelected = (selectedRecord: typeof mockFastRecords[number]
 }
 
 const isNewFastRecordDialogOpen = ref(false)
+// TODO: Вынести форму в отдельный компонент ???
 </script>
-
 <template>
   <h1 class="text-primary-semi-dark mb-7">
     Создание новой записи
