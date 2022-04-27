@@ -164,7 +164,7 @@ const isNewFastRecordDialogOpen = ref(false)
         <div class="mb-5">
           Выберите категорию
         </div>
-        <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" />
+        <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" :filter="true" name="category" placeholder="Категория" />
       </div>
       <div class="mb-5">
         <div class="mb-5">
