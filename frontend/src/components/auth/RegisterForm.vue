@@ -17,7 +17,7 @@ const schema = object({
   passwordConfirm: string()
     .oneOf([yupRef('password'), null], 'Пароли должны совпадать!')
     .required('Обязательное поле'),
-}).strict()
+})
 
 const { handleSubmit } = useForm<InferType<typeof schema>>({
   validationSchema: schema,

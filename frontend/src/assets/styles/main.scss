@@ -4,15 +4,27 @@
 
 $inputBorder: 4px solid #fff;
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 0;
   margin: 0;
 }
 
 $custom-translate-props: (
-    'translate-x-50': 'translateX(50%)',
-    '-translate-x-50': 'translateX(-30%)',
+  'translate-x-50': 'translateX(50%)',
+  '-translate-x-50': 'translateX(-30%)',
 );
+
+$additional-text-colors: (
+  text-primary-dark: var(--primary-dark-color),
+  text-primary-semi-dark: var(--primary-semi-dark-color),
+);
+
+@include style-class('background-color', (bg-primary-dark: var(--primary-dark-color)), true);
+@include style-class('color', $additional-text-colors, true);
 
 @include style-class('transform', $custom-translate-props, true);
 
@@ -42,4 +54,9 @@ html {
 
 .p-button {
   background-color: var(--primary-color);
+  border-color: var(--primary-color);
+
+  &:hover {
+    background-color: var(--primary-dark-color) !important;
+  }
 }

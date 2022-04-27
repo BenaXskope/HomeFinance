@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ProgressSpinner from 'primevue/progressspinner'
+import { useRoute } from 'vue-router'
+import MainLayout from '@/layouts/MainLayout.vue'
 import { getCsrf } from '@/api/auth/auth'
 import { getCsrfCookie } from '@/utils/cookie'
 
@@ -10,12 +12,20 @@ if (!getCsrfCookie()) {
   getCsrf().then(() => loading.value = false)
 }
 
+const currentRoute = useRoute()
+
+const isLayoutDisabled: boolean = 'noLayout' in currentRoute.meta
 </script>
 
 <template>
   <div>
     <ProgressSpinner v-if="loading" />
-    <router-view v-else />
+    <template v-else>
+      <router-view v-if="isLayoutDisabled" />
+      <MainLayout v-else>
+        <router-view />
+      </MainLayout>
+    </template>
   </div>
 </template>
 <style lang="scss">
