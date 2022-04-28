@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import { useRoute } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -14,7 +14,7 @@ if (!getCsrfCookie()) {
 
 const currentRoute = useRoute()
 
-const isLayoutDisabled: boolean = 'noLayout' in currentRoute.meta
+const isLayoutDisabled = computed(() => 'noLayout' in currentRoute.meta)
 </script>
 
 <template>

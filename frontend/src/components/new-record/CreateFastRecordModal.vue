@@ -71,7 +71,7 @@ const onSubmit = handleSubmit((values) => {
   <Dialog v-model:visible="dialogValue" header="Добавьте новую быструю запись" class="modal border-rounded" modal dismissable-mask>
     <form class="flex flex-column" @submit.prevent="onSubmit">
       <div class="mb-5">
-        <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" />
+        <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" filter />
       </div>
       <div class="mb-5">
         <InputNumber id="amount" v-model="amount" class="w-full" name="amount" placeholder="Сумма" />
