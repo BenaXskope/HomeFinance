@@ -33,14 +33,16 @@ const menuLinks = [
         <router-link
           v-for="link of menuLinks"
           :key="link.to"
-          v-slot="{ href, navigate, isActive}" class="link__active" :to="link.to" custom
+          v-slot="{href, navigate, isActive}" class="link__active" :to="link.to" custom
         >
           <li
             class="link-container"
             :class="{'link-container__active' : isActive}"
           >
-            <b class="curve" />
-            <b class="curve" />
+            <template v-if="isActive">
+              <b class="curve" />
+              <b class="curve" />
+            </template>
             <a class="link" :href="href" :class="[isActive ? 'text-primary-dark' : 'text-white']" @click="navigate"> {{ link.name }}</a>
           </li>
         </router-link>

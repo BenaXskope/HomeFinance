@@ -94,7 +94,7 @@ const onSubmit = handleSubmit((values) => {
 @import 'primeflex/primeflex.scss';
 
 .p-dialog {
-  @include styleclass('p-4 bg-white border-rounded w-50');
+  @include styleclass('p-4 bg-white border-round w-50');
 }
 .p-dialog-titlebar {
   @include styleclass('text-center');

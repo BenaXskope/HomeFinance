@@ -56,10 +56,10 @@ input[type=number] {
 .p-inputtext, .p-dropdown {
   border: none;
   border-bottom: 0.15rem solid #D3DFE7;
-  
-  &:not(:focus) {
-    border-radius: 0;
-  }
+}
+
+.p-inputtext:not(:focus), .p-dropdown:not(.p-inputwrapper-focus) {
+  border-radius: 0;
 }
 
 .p-button {

@@ -145,7 +145,7 @@ const mockFastRecords = [
   },
 ]
 
-const handleFastRecordSelected = (selectedRecord: typeof mockFastRecords[number]) => {
+const handleFastRecordSelected = (selectedRecord: Pick<typeof mockFastRecords[number], 'amount' | 'category' | 'isExpense'>) => {
   category.value = selectedRecord.category
   amount.value = selectedRecord.amount
   type.value = selectedRecord.isExpense
@@ -193,7 +193,7 @@ const isNewFastRecordDialogOpen = ref(false)
     <div class="col-6">
       <div class="w-full flex justify-content-between align-items-center mb-2">
         <div>Быстрая запись</div>
-        <Button label="Добавить" class="p-button-rounded -mt-1" @click="isNewFastRecordDialogOpen = !isNewFastRecordDialogOpen" />
+        <Button icon="pi pi-plus" class="p-button-rounded -mt-1" @click="isNewFastRecordDialogOpen = !isNewFastRecordDialogOpen" />
       </div>
       <DataTable
         :value="mockFastRecords" :paginator="true" class="p-datatable-customers" :rows="5"
@@ -232,3 +232,10 @@ const isNewFastRecordDialogOpen = ref(false)
     <CreateFastRecordModal v-model="isNewFastRecordDialogOpen" />
   </div>
 </template>
+<style lang="scss">
+@import 'primeflex/primeflex.scss';
+
+.p-datatable {
+  @include styleclass('overflow-hidden border-1 border-round border-gray-400')
+}
+</style>
