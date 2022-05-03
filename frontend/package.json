@@ -17,6 +17,7 @@
     "runtypes": "^6.5.1",
     "vee-validate": "^4.5.11",
     "vue": "^3.2.25",
+    "vue-material-design-icons": "^5.0.0",
     "vue-router": "^4.0.14",
     "yup": "^0.32.11"
   },

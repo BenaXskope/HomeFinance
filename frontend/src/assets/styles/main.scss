@@ -4,21 +4,43 @@
 
 $inputBorder: 4px solid #fff;
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 0;
   margin: 0;
 }
 
 $custom-translate-props: (
-    'translate-x-50': 'translateX(50%)',
-    '-translate-x-50': 'translateX(-30%)',
+  'translate-x-50': 'translateX(50%)',
+  '-translate-x-50': 'translateX(-30%)',
 );
+
+$additional-text-colors: (
+  text-primary-dark: var(--primary-dark-color),
+  text-primary-semi-dark: var(--primary-semi-dark-color),
+);
+
+@include style-class('background-color', (bg-primary-dark: var(--primary-dark-color)), true);
+@include style-class('color', $additional-text-colors, true);
 
 @include style-class('transform', $custom-translate-props, true);
 
 html {
   font-family: 'Roboto', sans-serif !important;
   font-size: 14px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 @media screen and (min-width: 1200px) {
@@ -31,15 +53,16 @@ html {
   filter: blur(8px);
 }
 
-.p-inputtext {
+.p-inputtext, .p-dropdown {
   border: none;
   border-bottom: 0.15rem solid #D3DFE7;
-  
-  &:not(:focus) {
-    border-radius: 0;
-  }
+}
+
+.p-inputtext:not(:focus), .p-dropdown:not(.p-inputwrapper-focus) {
+  border-radius: 0;
 }
 
 .p-button {
   background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
