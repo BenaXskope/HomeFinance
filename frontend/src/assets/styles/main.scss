@@ -13,6 +13,21 @@ body {
   margin: 0;
 }
 
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--bluegray-100);
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--primary-semi-dark-color);
+  border-radius: 20px;
+  border: 3px solid var(--bluegray-100);
+}
+
 $custom-translate-props: (
   'translate-x-50': 'translateX(50%)',
   '-translate-x-50': 'translateX(-30%)',
@@ -23,7 +38,12 @@ $additional-text-colors: (
   text-primary-semi-dark: var(--primary-semi-dark-color),
 );
 
-@include style-class('background-color', (bg-primary-dark: var(--primary-dark-color)), true);
+$additional-bg-colors: (
+  bg-primary-dark: var(--primary-dark-color),
+  bg-primary-light: var(--primary-light-color),
+);
+
+@include style-class('background-color', $additional-bg-colors, true);
 @include style-class('color', $additional-text-colors, true);
 
 @include style-class('transform', $custom-translate-props, true);

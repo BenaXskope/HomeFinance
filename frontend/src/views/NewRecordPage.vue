@@ -15,7 +15,7 @@ import CreateFastRecordModal from '@components/new-record/CreateFastRecordModal.
 
 const schema = object({
   category: number().required('Обязательное поле'),
-  amount: number().required('Обязательное поле'),
+  amount: number().min(1, 'Сумма должна быть положительной').required('Обязательное поле'),
   type: boolean().required('Обязательное поле'),
   description: string(),
 })
@@ -30,8 +30,8 @@ const { handleSubmit } = useForm({
   },
 })
 
-const { value: category } = useField<number>('category')
-const { value: amount } = useField<number>('amount')
+const { value: category, errorMessage: categoryError } = useField<number>('category')
+const { value: amount, errorMessage: amountError } = useField<number>('amount')
 const { value: type } = useField<boolean>('type')
 const { value: description } = useField<string>('description')
 
@@ -152,7 +152,6 @@ const handleFastRecordSelected = (selectedRecord: Pick<typeof mockFastRecords[nu
 }
 
 const isNewFastRecordDialogOpen = ref(false)
-// TODO: Вынести форму в отдельный компонент ???
 </script>
 <template>
   <h1 class="text-primary-semi-dark mb-7">
@@ -165,12 +164,18 @@ const isNewFastRecordDialogOpen = ref(false)
           Выберите категорию
         </div>
         <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" filter />
+        <div class="p-error mt-1 h-1rem text-sm">
+          {{ categoryError }}
+        </div>
       </div>
       <div class="mb-5">
         <div class="mb-5">
           Введите сумму
         </div>
         <InputNumber id="amount" v-model="amount" class="w-full" name="amount" placeholder="Сумма" />
+        <div class="p-error mt-1 h-1rem text-sm">
+          {{ amountError }}
+        </div>
       </div>
       <div class="mb-5 flex align-items-center">
         <div class="col-6">
@@ -186,7 +191,7 @@ const isNewFastRecordDialogOpen = ref(false)
         <div class="mb-5">
           Введите описание
         </div>
-        <InputText id="description" v-model="description" class="w-full" type="text" name="description" placeholder="Опсиание" />
+        <InputText id="description" v-model="description" class="w-full" type="text" name="description" placeholder="Описание" />
       </div>
       <Button label="СОЗДАТЬ" class="p-button-rounded align-self-start" type="submit" />
     </form>
@@ -201,26 +206,17 @@ const isNewFastRecordDialogOpen = ref(false)
         data-key="id"
         row-hover @update:selection="handleFastRecordSelected"
       >
-        <Column field="amount">
-          <template #header>
-            Сумма
-          </template>
+        <Column field="amount" header="Сумма">
           <template #body="{data}">
             {{ data.amount }}
           </template>
         </Column>
-        <Column field="category">
-          <template #header>
-            Категория
-          </template>
+        <Column field="category" header="Категория">
           <template #body="{data}">
             {{ data.categoryLabel }}
           </template>
         </Column>
-        <Column field="isExpense">
-          <template #header>
-            Тип
-          </template>
+        <Column field="isExpense" header="Тип">
           <template
             #body="{data}"
           >

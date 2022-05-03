@@ -20,8 +20,16 @@ const menuLinks = [
     to: '/',
   },
   {
-    name: 'Тест',
-    to: '/test',
+    name: 'Категории',
+    to: '/category',
+  },
+  {
+    name: 'История',
+    to: '/history',
+  },
+  {
+    name: 'Курс валют',
+    to: '/currencies',
   },
 ]
 </script>
@@ -33,7 +41,10 @@ const menuLinks = [
         <router-link
           v-for="link of menuLinks"
           :key="link.to"
-          v-slot="{href, navigate, isActive}" class="link__active" :to="link.to" custom
+          v-slot="{href, navigate, isActive}"
+          :to="link.to"
+          class="link__active"
+          custom
         >
           <li
             class="link-container"
@@ -48,7 +59,7 @@ const menuLinks = [
         </router-link>
       </ul>
     </div>
-    <div class="bg-white w-full h-full border-round p-4">
+    <div class="bg-white w-full h-full border-round p-4 px-6">
       <div class="flex justify-content-between align-items-center text-primary-dark">
         <div class="font-bold text-lg align-self-end">
           {{ new Date().toLocaleDateString() }}

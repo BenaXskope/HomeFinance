@@ -40,8 +40,8 @@ const { handleSubmit } = useForm({
   },
 })
 
-const { value: category } = useField<number>('category')
-const { value: amount } = useField<number>('amount')
+const { value: category, errorMessage: categoryError } = useField<number>('category')
+const { value: amount, errorMessage: amountError } = useField<number>('amount')
 const { value: type } = useField<boolean>('type')
 
 const mockCategories = [
@@ -72,9 +72,15 @@ const onSubmit = handleSubmit((values) => {
     <form class="flex flex-column" @submit.prevent="onSubmit">
       <div class="mb-5">
         <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" filter />
+        <div class="p-error mt-1 h-1rem text-sm">
+          {{ categoryError }}
+        </div>
       </div>
       <div class="mb-5">
         <InputNumber id="amount" v-model="amount" class="w-full" name="amount" placeholder="Сумма" />
+        <div class="p-error mt-1 h-1rem text-sm">
+          {{ amountError }}
+        </div>
       </div>
       <div class="mb-5 flex align-items-center justify-content-evenly">
         <div>

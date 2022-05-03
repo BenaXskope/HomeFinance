@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-  { path: '/', component: () => import('@/views/NewRecordPage.vue') },
-  { path: '/test', component: () => import('@views/TestPage.vue') },
   { path: '/login', component: () => import('@views/AuthPage.vue'), meta: { noLayout: true } },
+  { path: '/', component: () => import('@/views/NewRecordPage.vue') },
+  { path: '/category', component: () => import('@views/CategoryPage.vue') },
+  { path: '/history', component: () => import('@views/HistoryPage.vue') },
+  { path: '/currencies', component: () => import('@views/CurrenciesPage.vue') },
 ]
 
 const router = createRouter({
