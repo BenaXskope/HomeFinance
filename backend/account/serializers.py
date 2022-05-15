@@ -47,7 +47,7 @@ class PayOutSerializer(FlexFieldsModelSerializer):
 
     class Meta:
         model = models.PayOut
-        fields = ['id', 'account', 'value', 'category', 'creation_date', 'type']
+        fields = ['id', 'account', 'value', 'description', 'category', 'creation_date', 'isExpenditure', 'isFastRecord']
         expandable_fields = {
             'account': AccountSerializer,
             'category': CategorySerializer
@@ -56,7 +56,7 @@ class PayOutSerializer(FlexFieldsModelSerializer):
     def validate(self, data):
         if 'category' in data:
             category = data['category']
-            user = models.CustomUser.objects.get(username=data['account'])
+            user = models.CustomUser.objects.get(email=data['account'])
             account = models.Account.objects.get(user=user)
             # account = models.Account.objects.get(user=data['user'])
             if category.account.id != account.id:

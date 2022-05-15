@@ -37,7 +37,7 @@ def login_view(request):
                 "__all__": "Please enter both username and password"
             }
         }, status=400)
-    user = authenticate(email=email, password=password)
+    user = CustomUser.objects.get(email=email, password=password)
     if user is not None:
         login(request, user)
         return JsonResponse({"detail": "Success"})
