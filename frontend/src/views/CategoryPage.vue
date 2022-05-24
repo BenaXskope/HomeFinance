@@ -7,8 +7,8 @@ import EditCategoryForm from '@components/category/EditCategoryForm.vue'
   <h1 class="text-primary-semi-dark mb-2">
     Создание и редактирование категорий
   </h1>
-  <div class="flex justify-content-between">
-    <div class="flex-grow-1 mr-6">
+  <div class="flex flex-column md:flex-row justify-content-between">
+    <div class="flex-grow-1 md:mr-6">
       <h2 class="form-header">
         Создание
       </h2>

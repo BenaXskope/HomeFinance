@@ -6,12 +6,16 @@ import Dropdown from 'primevue/dropdown'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import RadioButton from 'primevue/radiobutton'
-
 import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+
 import RecordTypeTag from '@components/common/RecordTypeTag.vue'
 import CreateFastRecordModal from '@components/new-record/CreateFastRecordModal.vue'
+
+import { getCategories } from '@/api/categories/categories'
+
+getCategories().then(v => console.log(v))
 
 const schema = object({
   category: number().required('Обязательное поле'),
@@ -146,6 +150,7 @@ const mockFastRecords = [
 ]
 
 const handleFastRecordSelected = (selectedRecord: Pick<typeof mockFastRecords[number], 'amount' | 'category' | 'isExpense'>) => {
+  console.log(selectedRecord)
   category.value = selectedRecord.category
   amount.value = selectedRecord.amount
   type.value = selectedRecord.isExpense
@@ -157,8 +162,8 @@ const isNewFastRecordDialogOpen = ref(false)
   <h1 class="text-primary-semi-dark mb-7">
     Создание новой записи
   </h1>
-  <div class="flex text-lg">
-    <form class="col-6 flex flex-column" @submit.prevent="onSubmit">
+  <div class="flex flex-column md:flex-row text-lg">
+    <form class="md:col-6 flex flex-column" @submit.prevent="onSubmit">
       <div class="mb-5">
         <div class="mb-5">
           Выберите категорию
@@ -193,9 +198,10 @@ const isNewFastRecordDialogOpen = ref(false)
         </div>
         <InputText id="description" v-model="description" class="w-full" type="text" name="description" placeholder="Описание" />
       </div>
-      <Button label="СОЗДАТЬ" class="p-button-rounded align-self-start" type="submit" />
+      <Button label="СОЗДАТЬ" class="p-button-rounded align-self-end" type="submit" />
     </form>
-    <div class="col-6">
+    <hr class="md:hidden my-5 w-full">
+    <div class="md:col-6">
       <div class="w-full flex justify-content-between align-items-center mb-2">
         <div>Быстрая запись</div>
         <Button icon="pi pi-plus" class="p-button-rounded -mt-1" @click="isNewFastRecordDialogOpen = !isNewFastRecordDialogOpen" />
@@ -204,7 +210,8 @@ const isNewFastRecordDialogOpen = ref(false)
         :value="mockFastRecords" :paginator="true" class="p-datatable-customers" :rows="5"
         selection-mode="single"
         data-key="id"
-        row-hover @update:selection="handleFastRecordSelected"
+        row-hover
+        @row-select="(evt: any) => handleFastRecordSelected(evt.data)"
       >
         <Column field="amount" header="Сумма">
           <template #body="{data}">

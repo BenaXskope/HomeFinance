@@ -12,7 +12,6 @@ import { exhaustivenessCheck } from '@/utils/typing'
 
 const schema = object({
   email: string().email('Введите корректный email').required('Обязательное поле'),
-  username: string().required('Обязательное поле'),
   password: string().min(6, 'Пароль слишком короткий').required('Обязательное поле'),
   passwordConfirm: string()
     .oneOf([yupRef('password'), null], 'Пароли должны совпадать!')
@@ -24,7 +23,6 @@ const { handleSubmit } = useForm<InferType<typeof schema>>({
 })
 
 const { value: email, errorMessage: emailError, setErrors: setEmailErrors } = useField<string>('email')
-const { value: username, errorMessage: usernameError } = useField<string>('username')
 const { value: password, errorMessage: passwordError, setErrors: setPasswordErrors } = useField<string>('password')
 const { value: passwordConfirm, errorMessage: passwordConfirmError } = useField<string>('passwordConfirm')
 
@@ -61,11 +59,6 @@ const onSubmit = handleSubmit(async(values) => {
         <InputText id="email" v-model="email" name="email" class="w-full" type="text" />
         <div id="username2-help" class="p-error h-1rem text-sm">{{ emailError }}</div>
         <label for="email">Email</label>
-      </span>
-      <span class="p-float-label p-inputtext-lg mb-4">
-        <InputText id="email" v-model="username" name="email" class="w-full" type="text" />
-        <div id="username2-help" class="p-error h-1rem text-sm">{{ usernameError }}</div>
-        <label for="email">Логин</label>
       </span>
       <span class="p-float-label p-inputtext-lg mb-4">
         <InputText id="password" v-model="password" class="w-full" type="password" />

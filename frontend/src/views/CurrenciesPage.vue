@@ -49,8 +49,8 @@ const conversionResultLabel = computed(() => mockCurrencies.find(c => c.id === c
   <h1 class="text-primary-semi-dark mb-4">
     Курс валют
   </h1>
-  <div class="grid">
-    <div class="col-6">
+  <div class="flex flex-column-reverse md:flex-row">
+    <div class="md:col-6">
       <div class="mb-5">
         <div class="mb-5">
           Выберите исходную валюту
@@ -69,13 +69,12 @@ const conversionResultLabel = computed(() => mockCurrencies.find(c => c.id === c
         </div>
         <Dropdown id="category" v-model="conversionTo" class="w-full" :options="mockCurrencies" option-label="label" option-value="id" name="category" placeholder="Конечная валюта" filter />
       </div>
-      <div class="mb-5">
-        <div class="mb-5">
-          Результат: {{ conversionResult }} {{ conversionResultLabel }}
-        </div>
+      <div class="mb-6">
+        Результат: {{ conversionResult }} {{ conversionResultLabel }}
       </div>
     </div>
-    <div class="col-6">
+    <hr class="md:hidden my-5 w-full">
+    <div class="md:col-6">
       <DataTable
         v-model:filters="filters"
         :value="mockCurrencies"

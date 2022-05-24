@@ -28,19 +28,16 @@ interface RegistrationSuccessDTO {
 
 interface RegisterUserRequestDTO {
   email: string
-  username: string
   password: string
   password2: string
 }
 
 export const registerUser = async({
   email,
-  username,
   password,
   passwordConfirm,
 }: {
   email: string
-  username: string
   password: string
   passwordConfirm: string
 }): Promise<
@@ -58,7 +55,7 @@ RegistrationSuccessDTO
     RegistrationSuccessDTO,
     AxiosResponse<RegistrationSuccessDTO, RegisterUserRequestDTO>,
     RegisterUserRequestDTO
-    >(`${URL_CONFIG.AUTH.REGISTER}/`, { email, username, password, password2: passwordConfirm }, { withCredentials: true })
+    >(`${URL_CONFIG.AUTH.REGISTER}/`, { email, password, password2: passwordConfirm }, { withCredentials: true })
 
     return right(response.data)
   }
@@ -75,7 +72,6 @@ RegistrationSuccessDTO
 export const InvalidCredentialsError = Literal('Invalid credentials.')
 
 export const authUser = async(credentials: {
-  username: string
   password: string
 }):
 Promise<

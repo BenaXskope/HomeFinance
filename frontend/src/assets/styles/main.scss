@@ -14,18 +14,17 @@ body {
 }
 
 *::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--bluegray-100);
   border-radius: 20px;
 }
 
 *::-webkit-scrollbar-thumb {
   background-color: var(--primary-semi-dark-color);
   border-radius: 20px;
-  border: 3px solid var(--bluegray-100);
+  border: 2px solid white;
 }
 
 $custom-translate-props: (

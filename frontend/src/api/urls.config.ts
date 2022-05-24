@@ -6,4 +6,7 @@ export default {
     REGISTER: `${BASE_URL}/register`,
     LOGIN: `${BASE_URL}/login`,
   },
+  CATEGORIES: {
+    ALL: `${BASE_URL}/category`,
+  },
 }

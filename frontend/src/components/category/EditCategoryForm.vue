@@ -86,6 +86,6 @@ const onSubmit = handleSubmit((values) => {
         {{ limitError }}
       </div>
     </div>
-    <Button label="РЕДАКТИРОВАТЬ" class="p-button-rounded align-self-start" type="submit" />
+    <Button label="РЕДАКТИРОВАТЬ" class="p-button-rounded align-self-end" type="submit" />
   </form>
 </template>

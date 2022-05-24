@@ -124,16 +124,13 @@ const expandedRows = ref([])
   </h1>
   <DataTable
     v-model:expandedRows="expandedRows"
-    style="height: 710px;"
     :value="mockFastRecords"
     :paginator="true" class="p-datatable-customers" :rows="9"
-    :scrollable="true"
-    scroll-direction="vertical"
-    scroll-height="flex"
+
     data-key="id"
     row-hover
   >
-    <Column style="width: 20em; flex-shrink: 0; flex-grow: 0; flex-basis: 4em;" expander />
+    <Column style="flex-shrink: 0; flex-grow: 0; flex-basis: 3em;" expander />
     <Column field="amount" header="Сумма">
       <template #body="{data}">
         {{ data.amount }}
