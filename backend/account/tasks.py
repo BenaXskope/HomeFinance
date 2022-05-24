@@ -5,6 +5,7 @@ from . import models
 from finance.celery import app as celery_app
 
 
+
 @celery_app.task
 def update_rate():
     doc = requests.get('http://www.cbr.ru/scripts/XML_daily.asp')
