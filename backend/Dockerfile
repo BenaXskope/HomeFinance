@@ -6,6 +6,6 @@ COPY req.txt /code/
 RUN pip install -r req.txt
 
 COPY . /code/
-RUN ["chmod", "+x" ,"/code/docker-entrypoint.sh"]
+#RUN ["chmod", "+x" ,"/code/docker-entrypoint.sh"]
 
-ENTRYPOINT [ "/code/docker-entrypoint.sh" ]
+#ENTRYPOINT [ "/code/docker-entrypoint.sh" ]

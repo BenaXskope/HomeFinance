@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
+from .yasg import urlpatterns as swagger_urls
 
 schema_view = get_swagger_view(title='Finance API')
 
@@ -23,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('account.urls')),
     path('doc/', schema_view),
+    path('doc/', include(swagger_urls)),
     path('silk/', include('silk.urls', namespace='silk')),
     path('api/', include('users.urls'))
 ]

@@ -27,6 +27,5 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
 
 class CustomUser(AbstractUser):
 
-
     def __str__(self):
         return self.email
