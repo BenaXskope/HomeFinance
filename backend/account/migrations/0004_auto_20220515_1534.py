@@ -26,7 +26,7 @@ def fillUp(apps, schema_editor):
         catPred.save()
         cat = Category(title='Кредит', color='#ffffff', account=ac, prognosis=t * 100)
         cat.save()
-        catPred = CategoryPrognosis(categoryId=cat, value=t * 100)
+        catPred = CategoryPrognosis(value=t * 100, categoryId=cat)
         catPred.save()
         for r in range(100):
             payout = PayOut(account=ac, description="Пополнение", category=cat, value=r * 10,
