@@ -46,12 +46,20 @@ class Category(models.Model):
         ordering = ['title']
 
 
+class CategoryPrognosis(models.Model):
+    categoryId = models.ForeignKey(Category, verbose_name="Прогноз", on_delete=models.CASCADE, related_name="prognose")
+    value = models.DecimalField(verbose_name="Прогноз", max_digits=20, decimal_places=2, blank=False, default=0)
+    creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+
 class PayOut(models.Model):
     account = models.ForeignKey(Account, verbose_name="Аккаунт", on_delete=models.CASCADE, related_name="payout")
+    description = models.CharField(max_length=30, verbose_name="Описание", blank=False, default="Описание")
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="payout")
     value = models.DecimalField(verbose_name="Сумма", max_digits=20, decimal_places=2, blank=False, default=0)
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    type = models.BooleanField(verbose_name="Тип", blank=False, default=True)
+    isExpenditure = models.BooleanField(verbose_name="Тип", blank=False, default=True)  # ЭТО ПОПОЛНЕНИЕ
+    isFastRecord = models.BooleanField(verbose_name="Быстрая запись", blank=False, default=False)
 
     def __str__(self):
         return self.account + " " + self.creation_date

@@ -12,7 +12,7 @@ app.conf.broker_url = 'redis://localhost:6379/0'
 app.autodiscover_tasks()
 
 
-# celery -A finance beat -l debug - to run celery
+# celery -A finance beat -l debug
 # celery -A finance beat
 # To run without debug function
 @app.on_after_finalize.connect
