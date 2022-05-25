@@ -137,7 +137,7 @@ class CategoryView(FlexFieldsMixin, ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -211,14 +211,10 @@ class PayOutView(FlexFieldsMixin, ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
-        isExpenditure = bool(distutils.util.strtobool(request.data.get('isExpenditure')))
-        value = int(request.data.get('value'))
-        if isExpenditure:
-            account.total += value
-        else:
-            account.total -= value
+        #isExpenditure = bool(distutils.util.strtobool(request.data.get('isExpenditure')))
+        isExpenditure = request.data.get('isExpenditure')
         account.save()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -233,7 +229,7 @@ class PayOutView(FlexFieldsMixin, ModelViewSet):
         #     instance.category = None
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -248,7 +244,7 @@ def category_stat(request):
     date_from = datetime.strptime(request.data['date_from'], '%d/%m/%y')
     date_to = datetime.strptime(request.data['date_to'], '%d/%m/%y')
     isExpenditure = request.data['isExpenditure']
-    payouts = models.PayOut.objects.filter(category=category, isExpenditure=isExpenditure,
+    payouts = models.PayOut.objects.filter(category=category, isExpenditure=isExpenditure, isFastRecord=False,
                                            creation_date__range=[date_from, date_to])
 
     queryset = models.CategoryPrognosis.objects.filter(categoryId=category, creation_date__range=["2011-01-01", date_to])
@@ -266,7 +262,8 @@ def graph_points(request):
     date_to = datetime.strptime(request.data['date_to'], '%d/%m/%y')
     account = models.Account.objects.get(user=request.user)
 
-    payouts = models.PayOut.objects.filter(account=account, creation_date__range=[date_from, date_to])
+    payouts = models.PayOut.objects.filter(account=account, creation_date__range=[date_from, date_to],
+                                           isFastRecord=False)
 
     points = []
     for payout in payouts:
@@ -303,7 +300,8 @@ class FastPayOut(FlexFieldsMixin, ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        #request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -318,7 +316,7 @@ class FastPayOut(FlexFieldsMixin, ModelViewSet):
         #     instance.category = None
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
