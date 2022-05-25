@@ -1,60 +1,64 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { computed } from 'vue'
 import { useField, useForm } from 'vee-validate'
 import { number, object, string } from 'yup'
 import Dropdown from 'primevue/dropdown'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
+import { useToast } from 'primevue/usetoast'
 
-const mockCategories = [
-  {
-    id: 1,
-    label: 'Еда',
-    limit: 10000,
-  },
-  {
-    id: 2,
-    label: 'Одежда',
-    limit: 20000,
-  },
-  {
-    id: 3,
-    label: 'Техника',
-    limit: 30000,
-  },
-  {
-    id: 4,
-    label: 'Здоровье',
-    limit: 11000,
-  },
-]
+import type { CategoriesList } from '@api/categories/categories'
+import { editCategory } from '@api/categories/categories'
+
+const props = defineProps<{
+  categories: CategoriesList
+}>()
+const emits = defineEmits<{
+  (e: 'categoryEdited'): void
+}>()
 
 const schema = object({
-  category: number().required('Обязательное поле'),
-  name: string().required('Обязательное поле'),
-  limit: number().min(1, 'Сумма должна быть положительной').required('Обязательное поле'),
+  id: number().required('Обязательное поле'),
+  title: string().required('Обязательное поле'),
+  prognosis: number().min(1, 'Сумма должна быть положительной').required('Обязательное поле'),
 })
 
 const { handleSubmit } = useForm({
   validationSchema: schema,
 })
 
-const { value: category, errorMessage: categoryError } = useField<number>('category')
-const { value: name, errorMessage: nameError } = useField<string>('name')
-const { value: limit, errorMessage: limitError } = useField<number>('limit')
+const { value: id, errorMessage: idError } = useField<number>('id')
+const { value: title, errorMessage: titleError } = useField<string>('title')
+const { value: prognosis, errorMessage: prognosisError } = useField<number>('prognosis')
 
-watch(category, (newSelectedCategory) => {
-  const selectedCategory = mockCategories.find(category => category.id === newSelectedCategory)
+const toast = useToast()
+const onSubmit = handleSubmit(async(values) => {
+  if (!schema.isValidSync(values)) return
 
-  if (selectedCategory) {
-    name.value = selectedCategory.label
-    limit.value = selectedCategory.limit
+  const result = await editCategory(values)
+  if (result.isRight()) {
+    toast.add({ severity: 'success', summary: 'Успешно', detail: 'Категория изменена', life: 3000 })
+    emits('categoryEdited')
+    return
   }
+
+  toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка при изменении категории', life: 3000 })
 })
 
-const onSubmit = handleSubmit((values) => {
-  console.log(values)
+const selectedCategory = computed({
+  get() {
+    return {
+      id: id.value,
+      title: title.value,
+      prognosis: prognosis.value,
+    }
+  },
+  set(newValue: { id: number; title: string; prognosis: number }) {
+    id.value = newValue.id
+    title.value = newValue.title
+    prognosis.value = newValue.prognosis
+  },
 })
 </script>
 <template>
@@ -63,27 +67,27 @@ const onSubmit = handleSubmit((values) => {
       <div class="mb-5">
         Выберите категорию
       </div>
-      <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" filter />
+      <Dropdown id="id" v-model="selectedCategory" class="w-full" :options="categories" option-label="title" data-key="id" name="id" placeholder="Категория" filter />
       <div class="p-error mt-1 h-1rem text-sm">
-        {{ categoryError }}
+        {{ idError }}
       </div>
     </div>
     <div class="mb-5">
       <div class="mb-5">
         Введите название
       </div>
-      <InputText id="description" v-model="name" class="w-full" type="text" name="description" placeholder="Название" />
+      <InputText id="description" v-model="title" class="w-full" type="text" name="description" placeholder="Название" />
       <div class="p-error mt-1 h-1rem text-sm">
-        {{ nameError }}
+        {{ titleError }}
       </div>
     </div>
     <div class="mb-5">
       <div class="mb-5">
         Введите месячный лимит
       </div>
-      <InputNumber id="amount" v-model="limit" class="w-full" name="limit" placeholder="Сумма" />
+      <InputNumber id="amount" v-model="prognosis" class="w-full" name="limit" placeholder="Сумма" />
       <div class="p-error mt-1 h-1rem text-sm">
-        {{ limitError }}
+        {{ prognosisError }}
       </div>
     </div>
     <Button label="РЕДАКТИРОВАТЬ" class="p-button-rounded align-self-end" type="submit" />

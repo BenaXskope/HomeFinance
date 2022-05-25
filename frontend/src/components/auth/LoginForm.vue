@@ -2,7 +2,6 @@
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
-import Toast from 'primevue/toast'
 import type { InferType } from 'yup'
 import { object, string } from 'yup'
 import { useField, useForm } from 'vee-validate'

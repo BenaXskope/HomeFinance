@@ -15,4 +15,7 @@ export default {
   FAST_PAYOUTS: {
     BASE: `${BASE_URL}/fast_payout`,
   },
+  CURRENCIES: {
+    BASE: `${BASE_URL}/currency`,
+  },
 }

@@ -3,46 +3,39 @@ import axiosUtils from 'axios'
 import type { AxiosError } from 'axios'
 import { left, right } from '@sweet-monads/either'
 import type { Either } from '@sweet-monads/either'
-import type { CategoryDTO } from '@api/categories/categories'
 import axios from '@/api'
 import URL_CONFIG from '@/api/urls.config'
 
-interface FastPayoutDTO {
+interface CurrencyDTO {
   id: number
-  account: number
-  category: CategoryDTO
-  creation_date: string
-  description: string
-  isExpenditure: boolean
-  isFastRecord: boolean
-  value: string
+  let_code: string
+  name: string
+  num_code: number
+  rate: string
+  units: number
 }
-type FastPayoutListDTO = Array<FastPayoutDTO>
+type CurrenciesListDTO = Array<CurrencyDTO>
 
-export interface FastPayout {
+export interface Currency {
   id: number
-  category: number
-  categoryTitle: string
-  amount: number
-  isExpense: boolean
+  code: string
+  rate: number
 }
-export type FastPayoutsList = Array<FastPayout>
+export type CurrenciesList = Array<Currency>
 
-export const getFastPayouts = async(): Promise<
+export const getCurrencies = async(): Promise<
 Either<
 unknown,
-FastPayoutsList
+CurrenciesList
 >
 > => {
   try {
-    const response = await axios.get<FastPayoutListDTO>(`${URL_CONFIG.FAST_PAYOUTS.BASE}?expand=category`, { withCredentials: true })
+    const response = await axios.get<CurrenciesListDTO>(`${URL_CONFIG.CURRENCIES.BASE}/`, { withCredentials: true })
 
-    return right(response.data.map(fastPayout => ({
-      id: fastPayout.id,
-      category: fastPayout.category.id,
-      categoryTitle: fastPayout.category.title,
-      amount: parseInt(fastPayout.value, 10),
-      isExpense: fastPayout.isExpenditure,
+    return right(response.data.map(currency => ({
+      id: currency.id,
+      code: currency.let_code,
+      rate: Number(parseFloat(currency.rate).toFixed(2)),
     })))
   }
   catch (error: AxiosError | unknown) {

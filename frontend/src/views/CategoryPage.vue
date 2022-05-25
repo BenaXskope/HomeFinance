@@ -1,24 +1,34 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import NewCategoryForm from '@components/category/NewCategoryForm.vue'
 import EditCategoryForm from '@components/category/EditCategoryForm.vue'
+import { getCategories } from '@/api/categories/categories'
+import type { CategoriesList } from '@/api/categories/categories'
 
+const categories = ref<CategoriesList>([])
+const fetchCategories = async() => {
+  const response = await getCategories()
+  if (response.isRight())
+    categories.value = response.value
+}
+await fetchCategories()
 </script>
 <template>
   <h1 class="text-primary-semi-dark mb-2">
     Создание и редактирование категорий
   </h1>
-  <div class="flex flex-column md:flex-row justify-content-between">
+  <div class="flex flex-column md:flex-row justify-content-between px-1">
     <div class="flex-grow-1 md:mr-6">
       <h2 class="form-header">
         Создание
       </h2>
-      <NewCategoryForm />
+      <NewCategoryForm @category-created="fetchCategories" />
     </div>
     <div class="flex-grow-1 ">
       <h2 class="form-header">
         Редактирование
       </h2>
-      <EditCategoryForm />
+      <EditCategoryForm :categories="categories" @category-edited="fetchCategories" />
     </div>
   </div>
 </template>

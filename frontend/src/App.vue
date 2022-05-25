@@ -23,7 +23,7 @@ const isLayoutDisabled = computed(() => 'noLayout' in currentRoute.meta)
     <ProgressSpinner v-if="loading" />
     <template v-else>
       <router-view v-if="isLayoutDisabled" />
-      <MainLayout />
+      <MainLayout v-else />
     </template>
     <Toast position="bottom-right" />
   </div>

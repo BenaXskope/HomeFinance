@@ -19,6 +19,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
+  (e: 'fastRecordCreated'): void
 }>()
 
 const dialogValue = computed({
@@ -58,6 +59,7 @@ const onSubmit = handleSubmit(async(values, { resetForm }) => {
     toast.add({ severity: 'success', summary: 'Успешно', detail: 'Быстрая запись создана', life: 3000 })
     resetForm()
     emits('update:modelValue', false)
+    emits('fastRecordCreated')
     return
   }
 

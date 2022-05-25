@@ -7,43 +7,32 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { FilterMatchMode } from 'primevue/api'
 
-const mockCurrencies = [
-  {
-    id: 1,
-    label: 'USD',
-    value: 70.00,
-    date: new Date(),
-  },
-  {
-    id: 2,
-    label: 'EUR',
-    value: 80.00,
-    date: new Date(),
-  },
-  {
-    id: 3,
-    label: 'CHN',
-    value: 50.00,
-    date: new Date(),
-  },
-]
+import { getCurrencies } from '@api/currencies/currencies'
+import type { CurrenciesList, Currency } from '@api/currencies/currencies'
 
-const filters = reactive({ label: { value: undefined, matchMode: FilterMatchMode.CONTAINS } })
+const currencies = ref<CurrenciesList>([])
+const fetchCurrencies = async() => {
+  const fetchedCurrencies = await getCurrencies()
+  if (fetchedCurrencies.isRight())
+    currencies.value = fetchedCurrencies.value
+}
+await fetchCurrencies()
 
-const conversionFrom = ref(null)
-const conversionTo = ref(null)
-const conversionAmount = ref(null)
+const currenciesWithRub = computed<CurrenciesList>(() => [...currencies.value, { id: -1, code: 'RUB', rate: 1 }])
+
+const filters = reactive({ code: { value: undefined, matchMode: FilterMatchMode.CONTAINS } })
+
+const conversionFrom = ref<null |Currency>(null)
+const conversionTo = ref<null |Currency>(null)
+const conversionAmount = ref<number | null>(null)
 
 const conversionResult = computed(() => {
-  const fromCurrency = mockCurrencies.find(c => c.id === conversionFrom.value)
-  const toCurrency = mockCurrencies.find(c => c.id === conversionTo.value)
+  if (conversionAmount.value && conversionFrom.value && conversionTo.value)
+    return (conversionAmount.value * (conversionFrom.value.rate / conversionTo.value.rate)).toFixed(2)
 
-  if (conversionAmount.value && fromCurrency && toCurrency)
-    return conversionAmount.value * (fromCurrency.value / toCurrency.value)
-
-  return 0
+  return '0'
 })
-const conversionResultLabel = computed(() => mockCurrencies.find(c => c.id === conversionTo.value)?.label ?? '')
+const conversionResultLabel = computed(() => conversionTo.value?.code ?? '')
 </script>
 <template>
   <h1 class="text-primary-semi-dark mb-4">
@@ -55,7 +44,7 @@ const conversionResultLabel = computed(() => mockCurrencies.find(c => c.id === c
         <div class="mb-5">
           Выберите исходную валюту
         </div>
-        <Dropdown id="category" v-model="conversionFrom" class="w-full" :options="mockCurrencies" option-label="label" option-value="id" name="category" placeholder="Исходная валюта" filter />
+        <Dropdown id="category" v-model="conversionFrom" class="w-full" :options="currenciesWithRub" option-label="code" name="category" placeholder="Исходная валюта" filter />
       </div>
       <div class="mb-5">
         <div class="mb-5">
@@ -67,7 +56,7 @@ const conversionResultLabel = computed(() => mockCurrencies.find(c => c.id === c
         <div class="mb-5">
           Выберите конечную валюту
         </div>
-        <Dropdown id="category" v-model="conversionTo" class="w-full" :options="mockCurrencies" option-label="label" option-value="id" name="category" placeholder="Конечная валюта" filter />
+        <Dropdown id="category" v-model="conversionTo" class="w-full" :options="currenciesWithRub" option-label="code" name="category" placeholder="Конечная валюта" filter />
       </div>
       <div class="mb-6">
         Результат: {{ conversionResult }} {{ conversionResultLabel }}
@@ -77,7 +66,7 @@ const conversionResultLabel = computed(() => mockCurrencies.find(c => c.id === c
     <div class="md:col-6">
       <DataTable
         v-model:filters="filters"
-        :value="mockCurrencies"
+        :value="currencies"
         :paginator="true" class="p-datatable-customers" :rows="9"
         data-key="id"
         row-hover
@@ -86,15 +75,14 @@ const conversionResultLabel = computed(() => mockCurrencies.find(c => c.id === c
           <div class="flex justify-content-start align-items-center">
             <div class="p-input-icon-left">
               <i class="pi pi-search" />
-              <InputText v-model="filters['label'].value" placeholder="Поиск по названию валюты" />
+              <InputText v-model="filters['code'].value" placeholder="Поиск по названию валюты" />
             </div>
           </div>
         </template>
-        <Column field="label" header="Категория" />
-        <Column field="value" header="Курс" />
-        <Column field="date" header="Дата обновления">
+        <Column field="code" header="Валюта" />
+        <Column field="rate" header="Курс">
           <template #body="{data}">
-            {{ data.date.toLocaleDateString() }}
+            {{ data.rate }} ₽
           </template>
         </Column>
       </DataTable>

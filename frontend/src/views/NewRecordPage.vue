@@ -16,6 +16,7 @@ import CreateFastRecordModal from '@components/new-record/CreateFastRecordModal.
 
 import { createPayout } from '@api/payouts/payouts'
 import { getFastPayouts } from '@/api/payouts/fast-payouts'
+import type { FastPayoutsList } from '@/api/payouts/fast-payouts'
 import { getCategories } from '@/api/categories/categories'
 import type { CategoriesList } from '@/api/categories/categories'
 
@@ -25,8 +26,18 @@ await getCategories().then((cat) => {
     categories.value = cat.value
 })
 
-const fastRecords = ref([])
-await getFastPayouts().then(r => console.log(r))
+const fastRecords = ref<FastPayoutsList>([])
+const isFastRecordsListLoading = ref(false)
+const fetchFastRecords = async() => {
+  isFastRecordsListLoading.value = true
+
+  const response = await getFastPayouts()
+  if (response.isRight())
+    fastRecords.value = response.value
+
+  isFastRecordsListLoading.value = false
+}
+await fetchFastRecords()
 
 const schema = object({
   category: number().required('Обязательное поле'),
@@ -58,99 +69,13 @@ const onSubmit = handleSubmit(async(values, { resetForm }) => {
   if (result.isRight()) {
     toast.add({ severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 3000 })
     resetForm()
+    return
   }
 
   toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка при создании записи', life: 3000 })
 })
 
-const mockFastRecords = [
-  {
-    id: 1,
-    category: 1,
-    categoryLabel: 'Еда',
-    amount: 1000,
-    isExpense: true,
-  },
-  {
-    id: 2,
-    category: 2,
-    categoryLabel: 'Одежда',
-    amount: 2000,
-    isExpense: true,
-  },
-  {
-    id: 3,
-    category: 3,
-    categoryLabel: 'Техника',
-    amount: 30000,
-    isExpense: false,
-  },
-  {
-    id: 4,
-    category: 4,
-    categoryLabel: 'Здоровье',
-    amount: 760,
-    isExpense: true,
-  },
-  {
-    id: 5,
-    category: 1,
-    categoryLabel: 'Еда',
-    amount: 1000,
-    isExpense: true,
-  },
-  {
-    id: 6,
-    category: 2,
-    categoryLabel: 'Одежда',
-    amount: 2000,
-    isExpense: true,
-  },
-  {
-    id: 7,
-    category: 3,
-    categoryLabel: 'Техника',
-    amount: 30000,
-    isExpense: false,
-  },
-  {
-    id: 8,
-    category: 4,
-    categoryLabel: 'Здоровье',
-    amount: 760,
-    isExpense: true,
-  },
-  {
-    id: 9,
-    category: 1,
-    categoryLabel: 'Еда',
-    amount: 1000,
-    isExpense: true,
-  },
-  {
-    id: 10,
-    category: 2,
-    categoryLabel: 'Одежда',
-    amount: 2000,
-    isExpense: true,
-  },
-  {
-    id: 11,
-    category: 3,
-    categoryLabel: 'Техника',
-    amount: 30000,
-    isExpense: false,
-  },
-  {
-    id: 12,
-    category: 4,
-    categoryLabel: 'Здоровье',
-    amount: 760,
-    isExpense: true,
-  },
-]
-
-const handleFastRecordSelected = (selectedRecord: Pick<typeof mockFastRecords[number], 'amount' | 'category' | 'isExpense'>) => {
+const handleFastRecordSelected = (selectedRecord: Pick<typeof fastRecords.value[number], 'amount' | 'category' | 'isExpense'>) => {
   category.value = selectedRecord.category
   amount.value = selectedRecord.amount
   isExpense.value = selectedRecord.isExpense
@@ -207,7 +132,8 @@ const isNewFastRecordDialogOpen = ref(false)
         <Button icon="pi pi-plus" class="p-button-rounded -mt-1" @click="isNewFastRecordDialogOpen = !isNewFastRecordDialogOpen" />
       </div>
       <DataTable
-        :value="mockFastRecords" :paginator="true" class="p-datatable-customers" :rows="5"
+        :value="fastRecords" :paginator="true" class="p-datatable-customers" :rows="5"
+        :loading="isFastRecordsListLoading"
         selection-mode="single"
         data-key="id"
         row-hover
@@ -220,7 +146,7 @@ const isNewFastRecordDialogOpen = ref(false)
         </Column>
         <Column field="category" header="Категория">
           <template #body="{data}">
-            {{ data.categoryLabel }}
+            {{ data.categoryTitle }}
           </template>
         </Column>
         <Column field="isExpense" header="Тип">
@@ -232,7 +158,7 @@ const isNewFastRecordDialogOpen = ref(false)
         </Column>
       </DataTable>
     </div>
-    <CreateFastRecordModal v-model="isNewFastRecordDialogOpen" :categories="categories" />
+    <CreateFastRecordModal v-model="isNewFastRecordDialogOpen" :categories="categories" @fast-record-created="fetchFastRecords" />
   </div>
 </template>
 <style lang="scss">
