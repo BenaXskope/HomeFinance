@@ -248,7 +248,7 @@ def category_stat(request):
     date_from = datetime.strptime(request.data['date_from'], '%d/%m/%y')
     date_to = datetime.strptime(request.data['date_to'], '%d/%m/%y')
     isExpenditure = request.data['isExpenditure']
-    payouts = models.PayOut.objects.filter(category=category, isExpenditure=isExpenditure,
+    payouts = models.PayOut.objects.filter(category=category, isExpenditure=isExpenditure, isFastRecord=False,
                                            creation_date__range=[date_from, date_to])
 
     queryset = models.CategoryPrognosis.objects.filter(categoryId=category, creation_date__range=["2011-01-01", date_to])
@@ -266,7 +266,8 @@ def graph_points(request):
     date_to = datetime.strptime(request.data['date_to'], '%d/%m/%y')
     account = models.Account.objects.get(user=request.user)
 
-    payouts = models.PayOut.objects.filter(account=account, creation_date__range=[date_from, date_to])
+    payouts = models.PayOut.objects.filter(account=account, creation_date__range=[date_from, date_to],
+                                           isFastRecord=False)
 
     points = []
     for payout in payouts:
