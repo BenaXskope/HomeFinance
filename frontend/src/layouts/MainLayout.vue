@@ -48,7 +48,7 @@ const logout = () => {
 </script>
 <template>
   <div class="flex h-screen w-full md:bg-primary-dark">
-    <div class="menu-circle pb-1rem md:hidden" @click="isMenuShown = !isMenuShown">
+    <div class="menu-circle" @click="isMenuShown = !isMenuShown">
       <MenuIcon v-if="!isMenuShown" class="text-4xl" />
       <CloseIcon v-else class="text-4xl" />
     </div>
@@ -117,7 +117,7 @@ const logout = () => {
   left: 1rem;
   bottom: 1rem;
   padding-bottom: 0.5em;
-  @include styleclass('fixed z-5 border-circle w-3rem h-3rem bg-primary flex justify-content-center align-items-center')
+  @include styleclass('fixed z-5 border-circle w-3rem h-3rem bg-primary flex justify-content-center align-items-center pb-1rem md:hidden')
 }
 .link-container {
   @include styleclass('h-4rem flex align-items-center justify-content-center text-center mb-3');
