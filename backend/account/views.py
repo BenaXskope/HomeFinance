@@ -215,11 +215,6 @@ class PayOutView(FlexFieldsMixin, ModelViewSet):
         request.data.update({"account": account.id})
         #isExpenditure = bool(distutils.util.strtobool(request.data.get('isExpenditure')))
         isExpenditure = request.data.get('isExpenditure')
-        value = int(request.data.get('value'))
-        if isExpenditure:
-            account.total += value
-        else:
-            account.total -= value
         account.save()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
