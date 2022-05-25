@@ -304,7 +304,8 @@ class FastPayOut(FlexFieldsMixin, ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        #request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
