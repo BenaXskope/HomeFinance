@@ -7,9 +7,14 @@ import Button from 'primevue/button'
 import Dropdown from 'primevue/dropdown'
 import InputNumber from 'primevue/inputnumber'
 import RadioButton from 'primevue/radiobutton'
+import { useToast } from 'primevue/usetoast'
+
+import type { CategoriesList } from '@api/categories/categories'
+import { createFastPayout } from '@api/payouts/fast-payouts'
 
 const props = defineProps<{
   modelValue: boolean
+  categories: CategoriesList
 }>()
 
 const emits = defineEmits<{
@@ -28,7 +33,7 @@ const dialogValue = computed({
 const schema = object({
   category: number().required('Обязательное поле'),
   amount: number().required('Обязательное поле'),
-  type: boolean().required('Обязательное поле'),
+  isExpense: boolean().required('Обязательное поле'),
 })
 
 const { handleSubmit } = useForm({
@@ -36,42 +41,34 @@ const { handleSubmit } = useForm({
   initialValues: {
     category: undefined,
     amount: undefined,
-    type: false,
+    isExpense: false,
   },
 })
 
 const { value: category, errorMessage: categoryError } = useField<number>('category')
 const { value: amount, errorMessage: amountError } = useField<number>('amount')
-const { value: type } = useField<boolean>('type')
+const { value: isExpense } = useField<boolean>('isExpense')
 
-const mockCategories = [
-  {
-    label: 'Еда',
-    id: 1,
-  },
-  {
-    label: 'Одежда',
-    id: 2,
-  },
-  {
-    label: 'Техника',
-    id: 3,
-  },
-  {
-    label: 'Здоровье',
-    id: 4,
-  },
-]
+const toast = useToast()
+const onSubmit = handleSubmit(async(values, { resetForm }) => {
+  if (!schema.isValidSync(values)) return
 
-const onSubmit = handleSubmit((values) => {
-  console.log(values)
+  const result = await createFastPayout(values)
+  if (result.isRight()) {
+    toast.add({ severity: 'success', summary: 'Успешно', detail: 'Быстрая запись создана', life: 3000 })
+    resetForm()
+    emits('update:modelValue', false)
+    return
+  }
+
+  toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка при создании быстрой записи', life: 3000 })
 })
 </script>
 <template>
   <Dialog v-model:visible="dialogValue" header="Добавьте новую быструю запись" class="modal border-rounded" modal dismissable-mask>
     <form class="flex flex-column" @submit.prevent="onSubmit">
       <div class="mb-5">
-        <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" filter />
+        <Dropdown id="category" v-model="category" class="w-full" :options="categories" option-label="title" option-value="id" name="category" placeholder="Категория" filter />
         <div class="p-error mt-1 h-1rem text-sm">
           {{ categoryError }}
         </div>
@@ -84,11 +81,11 @@ const onSubmit = handleSubmit((values) => {
       </div>
       <div class="mb-5 flex align-items-center justify-content-evenly">
         <div>
-          <RadioButton id="income" v-model="type" class="mr-2" name="type" :value="false" />
+          <RadioButton id="income" v-model="isExpense" class="mr-2" name="type" :value="false" />
           <label for="income">Доход</label>
         </div>
         <div>
-          <RadioButton id="expense" v-model="type" class="mr-2" name="type" :value="true" />
+          <RadioButton id="expense" v-model="isExpense" class="mr-2" name="type" :value="true" />
           <label for="expense">Расход</label>
         </div>
       </div>

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import { useRoute } from 'vue-router'
+import Toast from 'primevue/toast'
 import MainLayout from '@/layouts/MainLayout.vue'
 import { getCsrf } from '@/api/auth/auth'
 import { getCsrfCookie } from '@/utils/cookie'
@@ -22,10 +23,9 @@ const isLayoutDisabled = computed(() => 'noLayout' in currentRoute.meta)
     <ProgressSpinner v-if="loading" />
     <template v-else>
       <router-view v-if="isLayoutDisabled" />
-      <MainLayout v-else>
-        <router-view />
-      </MainLayout>
+      <MainLayout />
     </template>
+    <Toast position="bottom-right" />
   </div>
 </template>
 <style lang="scss">

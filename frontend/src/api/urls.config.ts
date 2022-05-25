@@ -7,6 +7,12 @@ export default {
     LOGIN: `${BASE_URL}/login`,
   },
   CATEGORIES: {
-    ALL: `${BASE_URL}/category`,
+    BASE: `${BASE_URL}/category`,
+  },
+  PAYOUTS: {
+    BASE: `${BASE_URL}/payout`,
+  },
+  FAST_PAYOUTS: {
+    BASE: `${BASE_URL}/fast_payout`,
   },
 }

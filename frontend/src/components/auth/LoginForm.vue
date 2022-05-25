@@ -60,6 +60,5 @@ const onSubmit = handleSubmit(async(values) => {
     <div>
       <Button label="Войти" class="p-button-rounded" type="submit" />
     </div>
-    <Toast position="bottom-right" />
   </form>
 </template>

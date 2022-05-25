@@ -9,18 +9,29 @@ import RadioButton from 'primevue/radiobutton'
 import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import { useToast } from 'primevue/usetoast'
 
 import RecordTypeTag from '@components/common/RecordTypeTag.vue'
 import CreateFastRecordModal from '@components/new-record/CreateFastRecordModal.vue'
 
+import { createPayout } from '@api/payouts/payouts'
+import { getFastPayouts } from '@/api/payouts/fast-payouts'
 import { getCategories } from '@/api/categories/categories'
+import type { CategoriesList } from '@/api/categories/categories'
 
-getCategories().then(v => console.log(v))
+const categories = ref<CategoriesList>([])
+await getCategories().then((cat) => {
+  if (cat.isRight())
+    categories.value = cat.value
+})
+
+const fastRecords = ref([])
+await getFastPayouts().then(r => console.log(r))
 
 const schema = object({
   category: number().required('Обязательное поле'),
   amount: number().min(1, 'Сумма должна быть положительной').required('Обязательное поле'),
-  type: boolean().required('Обязательное поле'),
+  isExpense: boolean().required('Обязательное поле'),
   description: string(),
 })
 
@@ -29,38 +40,28 @@ const { handleSubmit } = useForm({
   initialValues: {
     category: undefined,
     amount: undefined,
-    type: false,
+    isExpense: false,
     description: undefined,
   },
 })
 
 const { value: category, errorMessage: categoryError } = useField<number>('category')
 const { value: amount, errorMessage: amountError } = useField<number>('amount')
-const { value: type } = useField<boolean>('type')
+const { value: isExpense } = useField<boolean>('isExpense')
 const { value: description } = useField<string>('description')
 
-const onSubmit = handleSubmit((values) => {
-  console.log(values)
-})
+const toast = useToast()
+const onSubmit = handleSubmit(async(values, { resetForm }) => {
+  if (!schema.isValidSync(values)) return
 
-const mockCategories = [
-  {
-    label: 'Еда',
-    id: 1,
-  },
-  {
-    label: 'Одежда',
-    id: 2,
-  },
-  {
-    label: 'Техника',
-    id: 3,
-  },
-  {
-    label: 'Здоровье',
-    id: 4,
-  },
-]
+  const result = await createPayout(values)
+  if (result.isRight()) {
+    toast.add({ severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 3000 })
+    resetForm()
+  }
+
+  toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка при создании записи', life: 3000 })
+})
 
 const mockFastRecords = [
   {
@@ -150,10 +151,9 @@ const mockFastRecords = [
 ]
 
 const handleFastRecordSelected = (selectedRecord: Pick<typeof mockFastRecords[number], 'amount' | 'category' | 'isExpense'>) => {
-  console.log(selectedRecord)
   category.value = selectedRecord.category
   amount.value = selectedRecord.amount
-  type.value = selectedRecord.isExpense
+  isExpense.value = selectedRecord.isExpense
 }
 
 const isNewFastRecordDialogOpen = ref(false)
@@ -168,7 +168,7 @@ const isNewFastRecordDialogOpen = ref(false)
         <div class="mb-5">
           Выберите категорию
         </div>
-        <Dropdown id="category" v-model="category" class="w-full" :options="mockCategories" option-label="label" option-value="id" name="category" placeholder="Категория" filter />
+        <Dropdown id="category" v-model="category" class="w-full" :options="categories" option-label="title" option-value="id" name="category" placeholder="Категория" filter />
         <div class="p-error mt-1 h-1rem text-sm">
           {{ categoryError }}
         </div>
@@ -184,11 +184,11 @@ const isNewFastRecordDialogOpen = ref(false)
       </div>
       <div class="mb-5 flex align-items-center">
         <div class="col-6">
-          <RadioButton id="income" v-model="type" class="mr-4" name="type" :value="false" />
+          <RadioButton id="income" v-model="isExpense" class="mr-4" name="type" :value="false" />
           <label for="income">Доход</label>
         </div>
         <div class="col-6">
-          <RadioButton id="expense" v-model="type" class="mr-4" name="type" :value="true" />
+          <RadioButton id="expense" v-model="isExpense" class="mr-4" name="type" :value="true" />
           <label for="expense">Расход</label>
         </div>
       </div>
@@ -232,7 +232,7 @@ const isNewFastRecordDialogOpen = ref(false)
         </Column>
       </DataTable>
     </div>
-    <CreateFastRecordModal v-model="isNewFastRecordDialogOpen" />
+    <CreateFastRecordModal v-model="isNewFastRecordDialogOpen" :categories="categories" />
   </div>
 </template>
 <style lang="scss">

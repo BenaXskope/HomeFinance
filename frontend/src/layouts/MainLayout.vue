@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from 'vue'
-import LogoIcon from '@components/icons/LogoIcon.vue'
+import { useRouter } from 'vue-router'
+import { useMediaQuery } from '@vueuse/core'
+import ProgressSpinner from 'primevue/progressspinner'
 import LogoutIcon from 'vue-material-design-icons/Logout.vue'
 import HelpIcon from 'vue-material-design-icons/HelpCircleOutline.vue'
 import MenuIcon from 'vue-material-design-icons/Menu.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
-import { useMediaQuery } from '@vueuse/core'
-import { useRouter } from 'vue-router'
+
+import LogoIcon from '@components/icons/LogoIcon.vue'
 
 const date = ref<string>('')
 const interval = setInterval(() => {
@@ -92,8 +94,19 @@ const logout = () => {
         </div>
       </div>
       <hr>
-      <div class="px-1 md:px-0 overflow-y-auto">
-        <slot />
+      <div class="h-full px-1 md:px-0 overflow-y-auto">
+        <router-view v-slot="{ Component }">
+          <template v-if="Component">
+            <Suspense>
+              <component :is="Component" />
+              <template #fallback>
+                <div class="h-full w-full flex justify-content-center align-items-center">
+                  <ProgressSpinner class="spinner" />
+                </div>
+              </template>
+            </Suspense>
+          </template>
+        </router-view>
       </div>
     </div>
   </div>
@@ -166,4 +179,22 @@ const logout = () => {
     transform: translateX(-100%);
     transition: all 150ms ease-in 0s
 }
+
+@keyframes p-progress-spinner-color {
+    100%,
+    0% {
+        stroke: var(--primary-dark-color);
+    }
+    40% {
+        stroke: var(--primary-dark-color);
+    }
+    66% {
+        stroke: var(--primary-dark-color);
+    }
+    80%,
+    90% {
+        stroke: var(--primary-dark-color);
+    }
+}
+
 </style>
