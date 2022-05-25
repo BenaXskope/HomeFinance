@@ -137,7 +137,7 @@ class CategoryView(FlexFieldsMixin, ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -211,9 +211,10 @@ class PayOutView(FlexFieldsMixin, ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
-        isExpenditure = bool(distutils.util.strtobool(request.data.get('isExpenditure')))
+        #isExpenditure = bool(distutils.util.strtobool(request.data.get('isExpenditure')))
+        isExpenditure = request.data.get('isExpenditure')
         value = int(request.data.get('value'))
         if isExpenditure:
             account.total += value
@@ -233,7 +234,7 @@ class PayOutView(FlexFieldsMixin, ModelViewSet):
         #     instance.category = None
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -320,7 +321,7 @@ class FastPayOut(FlexFieldsMixin, ModelViewSet):
         #     instance.category = None
         user = self.request.user
         account = models.Account.objects.get(user=user)
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"account": account.id})
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
