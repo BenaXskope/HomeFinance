@@ -7,6 +7,8 @@ from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 
+from django.utils.translation import ugettext_lazy as _
+
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
@@ -26,7 +28,10 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
 
 
 class CustomUser(AbstractUser):
-
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email

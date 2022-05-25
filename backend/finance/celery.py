@@ -18,7 +18,7 @@ app.autodiscover_tasks()
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     from account.tasks import update_rate
-    sender.add_periodic_task(12*60*60.0, update_rate())
+    sender.add_periodic_task(10, update_rate())
 
 
 

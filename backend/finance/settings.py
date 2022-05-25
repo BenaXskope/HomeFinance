@@ -114,8 +114,8 @@ DATABASES = {
 # Для докера
 # DATABASES = {
 #     'default': {
-#         #'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'ENGINE': 'django.db.backends.postgresql',
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         # 'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'postgres',
 #         'USER': 'postgres',
 #         'PASSWORD': 'postgres',
@@ -189,10 +189,16 @@ REDIS_PORT = '6379'
 BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-from celery.schedules import crontab
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_TIMEZONE = 'Europe/Moscow'
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+#CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    "update_rate": {
+        "task": "users.tasks.update_rate",
+        "schedule": crontab(minute=0, hour=12)
+    },
+}
 
 
 
