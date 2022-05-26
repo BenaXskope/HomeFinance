@@ -287,23 +287,60 @@ def category_stat(request):
                      responses=openapi.Response('response description', serializers.CategorySerializer))
 @api_view(['GET'])
 def graph_points(request):
+    isDaily = distutils.util.strtobool(request.GET['isDaily'])
     date_from = datetime.strptime(request.GET['date_from'], '%d/%m/%y')
     date_to = datetime.strptime(request.GET['date_to'], '%d/%m/%y')
     account = models.Account.objects.get(user=request.user)
 
     payouts = models.PayOut.objects.filter(account=account, creation_date__range=[date_from, date_to],
-                                           isFastRecord=False)
+                                           isFastRecord=False).order_by('creation_date')
 
-    points = {"spent": [], "earned": []}
-    for payout in payouts:
-        point = {"date": payout.creation_date, "value": payout.value}
-        if payout.isExpenditure:
-            points['earned'].append(point)
-        else:
-            points['spent'].append(point)
+    points = {"spent": {}, "earned": {}}
+    if isDaily:
+        for payout in payouts:
+            if payout.isExpenditure:
+                if (str(payout.creation_date.day) + '.' +
+                       str(payout.creation_date.month) + '.' +
+                       str(payout.creation_date.year)) in points['earned']:
+                    points['earned'][str(payout.creation_date.day) + '.' +
+                       str(payout.creation_date.month) + '.' +
+                       str(payout.creation_date.year)] += payout.value
+                else:
+                    points['earned'][
+                        str(payout.creation_date.day) + '.' +
+                        str(payout.creation_date.month) + '.' +
+                        str(payout.creation_date.year)] = payout.value
+            else:
+                if (str(payout.creation_date.day) + '.' +
+                       str(payout.creation_date.month) + '.' +
+                       str(payout.creation_date.year)) in points['spent']:
+                    points['spent'][str(payout.creation_date.day) + '.' +
+                       str(payout.creation_date.month) + '.' +
+                       str(payout.creation_date.year)] += payout.value
+                else:
+                    points['spent'][
+                        str(payout.creation_date.day) + '.' +
+                        str(payout.creation_date.month) + '.' +
+                        str(payout.creation_date.year)] = payout.value
+    else:
+        for payout in payouts:
+            if payout.isExpenditure:
+                if (str(payout.creation_date.month) + '.' + str(payout.creation_date.year)) in points['earned']:
+                    points['earned'][str(payout.creation_date.month) + '.' +
+                                     str(payout.creation_date.year)] += payout.value
+                else:
+                    points['earned'][
+                        str(payout.creation_date.month) + '.' +
+                        str(payout.creation_date.year)] = payout.value
+            else:
+                if (str(payout.creation_date.month) + '.' + str(payout.creation_date.year)) in points['spent']:
+                    points['spent'][str(payout.creation_date.month) + '.' +
+                                    str(payout.creation_date.year)] += payout.value
+                else:
+                    points['spent'][
+                        str(payout.creation_date.month) + '.' +
+                        str(payout.creation_date.year)] = payout.value
     return JsonResponse(points, safe=False, status=200)
-
-
 
 
 class FastPayOut(FlexFieldsMixin, ModelViewSet):
