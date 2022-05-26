@@ -12,6 +12,8 @@ from rest_flex_fields import is_expanded
 from rest_framework.views import APIView
 import requests
 import xml.etree.ElementTree as ET
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 class CurrencyUpdate(APIView):
@@ -242,37 +244,64 @@ class PayOutView(FlexFieldsMixin, ModelViewSet):
 
 @api_view(['GET'])
 def category_stat(request):
-    category = models.Category.objects.get(id=request.data['category'])
-    value = 0
-    date_from = datetime.strptime(request.data['date_from'], '%d/%m/%y')
-    date_to = datetime.strptime(request.data['date_to'], '%d/%m/%y')
-    isExpenditure = request.data['isExpenditure']
-    payouts = models.PayOut.objects.filter(category=category, isExpenditure=isExpenditure, isFastRecord=False,
-                                           creation_date__range=[date_from, date_to])
+    date_from = datetime.strptime(request.GET['date_from'], '%d/%m/%y')
+    date_to = datetime.strptime(request.GET['date_to'], '%d/%m/%y')
+    account = models.Account.objects.get(user=request.user)
+    categories = models.Category.objects.filter(account=account)
+    responseArr = []
 
-    queryset = models.CategoryPrognosis.objects.filter(categoryId=category, creation_date__range=["2011-01-01", date_to])
-    max_date = queryset.latest('creation_date').creation_date
-    catProgs = models.CategoryPrognosis.objects.get(creation_date=max_date)
+    for category in categories:
+        queryset = models.CategoryPrognosis.objects.filter(categoryId=category,
+                                                           creation_date__range=["2011-01-01", date_to])
+        if queryset:
+            max_date = queryset.latest('creation_date').creation_date
+            catProgs = models.CategoryPrognosis.objects.get(creation_date=max_date)
+            prognose = catProgs.value
+        else:
+            prognose = 0
 
-    for payout in payouts:
-        value += payout.value
-    return Response({"category": category.title, "value": value, "prognosis": catProgs.value})
+        payouts = models.PayOut.objects.filter(category=category, isFastRecord=False,
+                                               creation_date__range=[date_from, date_to])
+        spentTotal = 0
+        earnedTotal = 0
+        for payout in payouts:
+            if payout.isExpenditure:
+                earnedTotal += payout.value
+            else:
+                spentTotal += payout.value
+        category.prognosis = prognose
+
+        catData = {"category": serializers.CategorySerializer(category).data,
+                    "spentTotal": earnedTotal,
+                    "earnedTotal": spentTotal}
+        responseArr.append(catData)
+
+    return JsonResponse(responseArr, safe=False)
 
 
+@swagger_auto_schema(method='get',
+                     manual_parameters=[
+                         openapi.Parameter('date_from', openapi.IN_PATH, type=openapi.FORMAT_DATE),
+                         openapi.Parameter('date_to', openapi.IN_PATH, type=openapi.FORMAT_DATE),
+                     ],
+                     responses=openapi.Response('response description', serializers.CategorySerializer))
 @api_view(['GET'])
 def graph_points(request):
-    date_from = datetime.strptime(request.data['date_from'], '%d/%m/%y')
-    date_to = datetime.strptime(request.data['date_to'], '%d/%m/%y')
+    date_from = datetime.strptime(request.GET['date_from'], '%d/%m/%y')
+    date_to = datetime.strptime(request.GET['date_to'], '%d/%m/%y')
     account = models.Account.objects.get(user=request.user)
 
     payouts = models.PayOut.objects.filter(account=account, creation_date__range=[date_from, date_to],
                                            isFastRecord=False)
 
-    points = []
+    points = {"spent": [], "earned": []}
     for payout in payouts:
-        point = {"date": payout.creation_date, "value": payout.value, "isExpenditure": payout.isExpenditure}
-        points.append(point)
-    return JsonResponse(points, safe=False)
+        point = {"date": payout.creation_date, "value": payout.value}
+        if payout.isExpenditure:
+            points['earned'].append(point)
+        else:
+            points['spent'].append(point)
+    return JsonResponse(points, safe=False, status=200)
 
 
 
