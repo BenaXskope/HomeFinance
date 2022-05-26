@@ -194,17 +194,20 @@ class PayOutView(FlexFieldsMixin, ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        if 'date_from' in request.data and 'date_to' in request.data:
-            print(request.data['date_from'])
-            date_from = datetime.strptime(request.data['date_from'], '%d/%m/%y')
-            date_to = datetime.strptime(request.data['date_to'], '%d/%m/%y')
+
+        if 'isExpenditure' in request.GET:  # Получить сумму
+            isExpenditure = request.GET['isExpenditure']
+            queryset = queryset.filter(isExpenditure=isExpenditure)
+
+        if 'date_from' in request.GET and 'date_to' in request.GET:
+            date_from = datetime.strptime(request.GET['date_from'], '%d/%m/%y')
+            date_to = datetime.strptime(request.GET['date_to'], '%d/%m/%y')
             queryset = queryset.filter(creation_date__range=[date_from, date_to])
-        if 'isExpenditure' in request.data:  # Получить сумму
-            payout_type = request.data['isExpenditure']
-            queryset = queryset.filter(isExpenditure=payout_type)
-        if 'category' in request.data:
-            category = request.data['category']
+
+        if 'category' in request.GET:
+            category = request.GET['category']
             queryset = queryset.filter(category=category)
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
