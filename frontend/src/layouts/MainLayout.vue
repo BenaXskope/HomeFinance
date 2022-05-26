@@ -40,6 +40,10 @@ const menuLinks = [
     name: 'Курс валют',
     to: '/currencies',
   },
+  {
+    name: 'Планирование',
+    to: '/planning',
+  },
 ]
 const router = useRouter()
 const logout = () => {
@@ -94,7 +98,7 @@ const logout = () => {
         </div>
       </div>
       <hr>
-      <div class="h-full px-1 md:px-0 overflow-y-auto">
+      <div class="h-full px-1 overflow-y-auto">
         <router-view v-slot="{ Component }">
           <template v-if="Component">
             <Suspense>

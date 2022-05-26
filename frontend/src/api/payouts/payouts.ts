@@ -30,14 +30,24 @@ export interface Payout {
 }
 export type PayoutsList = Array<Payout>
 
-export const getPayouts = async(): Promise<
+interface GetPayoutFilterParams {
+  category?: number | string
+  isExpense?: boolean
+}
+export const getPayouts = async(filterParams: GetPayoutFilterParams): Promise<
 Either<
 unknown,
 PayoutsList
 >
 > => {
   try {
-    const response = await axios.get<PayoutListDTO>(`${URL_CONFIG.PAYOUTS.BASE}?expand=category`, { withCredentials: true })
+    const response = await axios.get<PayoutListDTO>(`${URL_CONFIG.PAYOUTS.BASE}?expand=category`, {
+      withCredentials: true,
+      params: {
+        category: filterParams.category,
+        isExpenditure: filterParams.isExpense ? +filterParams.isExpense : null,
+      },
+    })
 
     return right(response.data.map(payout => ({
       id: payout.id,
