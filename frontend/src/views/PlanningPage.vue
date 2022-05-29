@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useStorage } from '@vueuse/core'
 import ProgressBar from 'primevue/progressbar'
+import ProgressSpinner from 'primevue/progressspinner'
 import SelectButton from 'primevue/selectbutton'
+import Calendar from 'primevue/calendar'
 import ChevronRightIcon from 'vue-material-design-icons/ChevronRight.vue'
-import { getCategories } from '@/api/categories/categories'
-import type { CategoriesList } from '@/api/categories/categories'
+import { getCategoriesWithStats } from '@/api/categories/categories'
+import type { CategoriesWithStats, CategoryWithStats } from '@/api/categories/categories'
 
 const statisticsTypes = [{
   label: 'Расход',
@@ -16,11 +19,23 @@ const statisticsTypes = [{
 }]
 const selectedType = ref(true)
 
-const categories = ref<CategoriesList>([])
-await getCategories().then((cat) => {
-  if (cat.isRight())
-    categories.value = cat.value
-})
+const month = useStorage('month', new Date())
+const categories = ref<CategoriesWithStats>([])
+
+const isLoading = ref(false)
+const fetchCategories = async() => {
+  isLoading.value = true
+
+  const fetchedCategories = await getCategoriesWithStats({ month: month.value })
+  if (fetchedCategories.isRight())
+    categories.value = fetchedCategories.value
+
+  isLoading.value = false
+}
+watch(month, fetchCategories)
+await fetchCategories()
+
+const categoryProgress = (category: CategoryWithStats) => selectedType.value ? category.spentTotal : category.earnedTotal
 </script>
 <template>
   <ConfirmDialog />
@@ -28,7 +43,10 @@ await getCategories().then((cat) => {
   <h1 class="text-primary-semi-dark mb-4">
     Планирование
   </h1>
+  <Calendar id="month" v-model="month" view="month" date-format="MM yy" :manual-input="false" class="mb-4" />
+
   <SelectButton v-model="selectedType" :options="statisticsTypes" option-label="label" option-value="value" class="mb-4" />
+  <ProgressBar v-if="isLoading" />
   <div class="flex flex-column">
     <router-link
       v-for="category of categories"
@@ -43,9 +61,9 @@ await getCategories().then((cat) => {
             <div class="text-lg ">
               {{ category.title }}
             </div>
-            <div>{{ category.prognosis / 2 }}₽ из {{ category.prognosis }}₽</div>
+            <div>{{ categoryProgress(category) }}₽ из {{ category.prognosis }}₽</div>
           </div>
-          <ProgressBar :value="50" />
+          <ProgressBar :value="categoryProgress(category)" />
         </div>
         <ChevronRightIcon class="text-3xl ml-2" />
       </div>

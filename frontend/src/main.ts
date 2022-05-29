@@ -15,4 +15,11 @@ import '@assets/styles/main.scss'
 import App from './App.vue'
 import router from './router'
 
-createApp(App).use(PrimeVue, { ripple: true }).use(ToastService).use(ConfirmationService).use(router).use(createPinia()).mount('#app')
+createApp(App).use(PrimeVue, {
+  ripple: true,
+  locale: {
+    monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'],
+
+  },
+}).use(ToastService).use(ConfirmationService).use(router).use(createPinia()).mount('#app')

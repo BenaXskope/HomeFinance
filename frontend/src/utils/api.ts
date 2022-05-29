@@ -16,3 +16,8 @@ export const getErrorsList = <T extends string, E extends T | string>(errors: Er
 
   return handledErrors
 }
+
+export const mapDateToDTO = (date: Date) => {
+  const [day, month, year] = date.toLocaleDateString().split('.')
+  return `${day}/${month}/${year.substring(2)}`
+}

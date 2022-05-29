@@ -8,6 +8,7 @@ export default {
   },
   CATEGORIES: {
     BASE: `${BASE_URL}/category`,
+    STATISTICS: `${BASE_URL}/category_stat`,
   },
   PAYOUTS: {
     BASE: `${BASE_URL}/payout`,

@@ -3,8 +3,10 @@ import axiosUtils from 'axios'
 import type { AxiosError } from 'axios'
 import { left, right } from '@sweet-monads/either'
 import type { Either } from '@sweet-monads/either'
+import { endOfMonth, startOfMonth } from 'date-fns'
 import axios from '@/api'
 import URL_CONFIG from '@/api/urls.config'
+import { mapDateToDTO } from '@/utils/api'
 
 export interface CategoryDTO {
   account: number
@@ -47,6 +49,48 @@ CategoriesList
   }
 }
 
+export interface GetCategoriesWithStatsParams {
+  month: Date
+  isDaily?: boolean
+}
+export interface CategoryWithStatsDTO {
+  category: CategoryDTO
+  spentTotal: number
+  earnedTotal: number
+}
+export type CategoriesWithStatsDTO = Array<CategoryWithStatsDTO>
+
+export interface CategoryWithStats extends Category{
+  spentTotal: number
+  earnedTotal: number
+}
+export type CategoriesWithStats = Array<CategoryWithStats>
+export const getCategoriesWithStats = async({ month, isDaily = false }: GetCategoriesWithStatsParams): Promise<
+Either<
+unknown,
+CategoriesWithStats
+>> => {
+  try {
+    const response = await axios.get<CategoriesWithStatsDTO>(`${URL_CONFIG.CATEGORIES.STATISTICS}`, {
+      withCredentials: true,
+      params: {
+        date_from: mapDateToDTO(startOfMonth(month)),
+        date_to: mapDateToDTO(endOfMonth(month)),
+        isDaily,
+      },
+    })
+    return right(response.data.map(categoryDTO => ({
+      id: categoryDTO.category.id,
+      title: categoryDTO.category.title,
+      prognosis: parseFloat(categoryDTO.category.prognosis),
+      spentTotal: categoryDTO.spentTotal,
+      earnedTotal: categoryDTO.earnedTotal,
+    })))
+  }
+  catch (e) {
+    return left(e)
+  }
+}
 export interface PatchCategoryParams {
   id: number
   title: string

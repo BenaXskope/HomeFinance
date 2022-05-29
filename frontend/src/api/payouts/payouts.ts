@@ -45,7 +45,7 @@ PayoutsList
       withCredentials: true,
       params: {
         category: filterParams.category,
-        isExpenditure: filterParams.isExpense ? +filterParams.isExpense : null,
+        isExpenditure: typeof filterParams.isExpense === 'undefined' ? null : +filterParams.isExpense,
       },
     })
 
