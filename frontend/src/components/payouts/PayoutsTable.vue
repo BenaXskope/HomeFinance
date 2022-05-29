@@ -56,7 +56,7 @@ const handleDelete = (id: number) => {
   <DataTable
     v-model:expandedRows="expandedRows"
     :value="payouts"
-    :paginator="true" class="p-datatable-customers" :rows="9"
+    :paginator="true" class="p-datatable-customers" :rows="8"
     :loading="isPayoutsListLoading"
     data-key="id"
     row-hover
