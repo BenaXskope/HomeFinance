@@ -59,7 +59,7 @@ def fillUp(apps, schema_editor):
 
 
         prognose = random.randint(10, 50) * 1000
-        cat = Category(title='Технкиа', color='05386b', account=ac, prognosis=prognose)
+        cat = Category(title='Техника', color='05386b', account=ac, prognosis=prognose)
         cat.save()
         catPred = CategoryPrognosis(categoryId=cat, value=prognose)
         catPred.save()
