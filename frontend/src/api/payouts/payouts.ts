@@ -3,7 +3,7 @@ import axiosUtils from 'axios'
 import type { AxiosError } from 'axios'
 import { left, right } from '@sweet-monads/either'
 import type { Either } from '@sweet-monads/either'
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { addDays, endOfMonth, startOfMonth } from 'date-fns'
 import type { CategoryDTO } from '@api/categories/categories'
 import URL_CONFIG from '@api/urls.config'
 import axios from '@/api'
@@ -48,7 +48,7 @@ PayoutsList
       withCredentials: true,
       params: {
         date_from: mapDateToDTO(startOfMonth(filterParams.month)),
-        date_to: mapDateToDTO(endOfMonth(filterParams.month)),
+        date_to: mapDateToDTO(addDays(endOfMonth(filterParams.month), 1)),
         category: filterParams.category,
         isExpenditure: typeof filterParams.isExpense === 'undefined' ? null : +filterParams.isExpense,
       },

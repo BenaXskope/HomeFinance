@@ -3,7 +3,7 @@ import axiosUtils from 'axios'
 import type { AxiosError } from 'axios'
 import { left, right } from '@sweet-monads/either'
 import type { Either } from '@sweet-monads/either'
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { addDays, endOfMonth, startOfMonth } from 'date-fns'
 import axios from '@/api'
 import URL_CONFIG from '@/api/urls.config'
 import { mapDateToDTO } from '@/utils/api'
@@ -36,7 +36,7 @@ GraphPoints
       params: {
         isDaily: +isDaily,
         date_from: mapDateToDTO(startOfMonth(startDate)),
-        date_to: mapDateToDTO(endOfMonth(endDate)),
+        date_to: mapDateToDTO(addDays(endOfMonth(endDate), 1)),
       },
     })
 
