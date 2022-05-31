@@ -58,42 +58,42 @@ def fillUp(apps, schema_editor):
         payout.save()
 
 
-        prognose = random.randint(1, 50) * 1000
+        prognose = random.randint(10, 50) * 1000
         cat = Category(title='Технкиа', color='05386b', account=ac, prognosis=prognose)
         cat.save()
         catPred = CategoryPrognosis(categoryId=cat, value=prognose)
         catPred.save()
         for r in range(100):
-            payout = PayOut(account=ac, description="Пополнение", category=cat, value=random.randint(1, 50)*100,
+            payout = PayOut(account=ac, description="Пополнение", category=cat, value=random.randint(1, 50),
                             isExpenditure=True, isFastRecord=False)
             payout.save()
-            payout = PayOut(account=ac, description="Траты", category=cat, value=random.randint(1, 50)*100,
+            payout = PayOut(account=ac, description="Траты", category=cat, value=random.randint(1, 50),
                             isExpenditure=False, isFastRecord=False)
             payout.save()
-        payout = PayOut(account=ac, description="Быстрое Пополнение", category=cat, value=random.randint(1, 50) * 100,
+        payout = PayOut(account=ac, description="Быстрое Пополнение", category=cat, value=random.randint(1, 50),
                         isExpenditure=True, isFastRecord=True)
         payout.save()
-        payout = PayOut(account=ac, description="Быстрые Траты", category=cat, value=random.randint(1, 50) * 100,
+        payout = PayOut(account=ac, description="Быстрые Траты", category=cat, value=random.randint(1, 50),
                         isExpenditure=False, isFastRecord=True)
         payout.save()
 
 
-        prognose = random.randint(1, 50) * 1000
-        cat = Category(title='Непрдвиденные расходы', color='c3073f', account=ac, prognosis=prognose)
+        prognose = random.randint(10, 50) * 1000
+        cat = Category(title='Непредвиденные расходы', color='c3073f', account=ac, prognosis=prognose)
         cat.save()
         catPred = CategoryPrognosis(categoryId=cat, value=prognose)
         catPred.save()
         for r in range(100):
-            payout = PayOut(account=ac, description="Пополнение", category=cat, value=random.randint(1, 50)*100,
+            payout = PayOut(account=ac, description="Пополнение", category=cat, value=random.randint(1, 50),
                             isExpenditure=True, isFastRecord=False)
             payout.save()
-            payout = PayOut(account=ac, description="Траты", category=cat, value=random.randint(1, 50)*100,
+            payout = PayOut(account=ac, description="Траты", category=cat, value=random.randint(1, 50),
                             isExpenditure=False, isFastRecord=False)
             payout.save()
-        payout = PayOut(account=ac, description="Быстрое Пополнение", category=cat, value=random.randint(1, 50) * 100,
+        payout = PayOut(account=ac, description="Быстрое Пополнение", category=cat, value=random.randint(1, 50)*10,
                         isExpenditure=True, isFastRecord=True)
         payout.save()
-        payout = PayOut(account=ac, description="Быстрые Траты", category=cat, value=random.randint(1, 50) * 100,
+        payout = PayOut(account=ac, description="Быстрые Траты", category=cat, value=random.randint(1, 50)*10,
                         isExpenditure=False, isFastRecord=True)
         payout.save()
 
