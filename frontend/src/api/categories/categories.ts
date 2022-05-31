@@ -10,8 +10,8 @@ import { mapDateToDTO } from '@/utils/api'
 
 export interface CategoryDTO {
   account: number
-  color: string
   id: number
+  color: string
   prognosis: string
   title: string
 }
@@ -20,6 +20,7 @@ export type CategoriesListDTO = Array<CategoryDTO>
 export interface Category {
   id: number
   title: string
+  color: string
   prognosis: number
 }
 export type CategoriesList = Array<Category>
@@ -36,6 +37,7 @@ CategoriesList
     return right(response.data.map(category => ({
       id: category.id,
       title: category.title,
+      color: category.color,
       prognosis: parseFloat(category.prognosis),
     })))
   }
@@ -55,8 +57,8 @@ export interface GetCategoriesWithStatsParams {
 }
 export interface CategoryWithStatsDTO {
   category: CategoryDTO
-  spentTotal: number
-  earnedTotal: number
+  spentTotal: string
+  earnedTotal: string
 }
 export type CategoriesWithStatsDTO = Array<CategoryWithStatsDTO>
 
@@ -82,19 +84,59 @@ CategoriesWithStats
     return right(response.data.map(categoryDTO => ({
       id: categoryDTO.category.id,
       title: categoryDTO.category.title,
-      prognosis: parseFloat(categoryDTO.category.prognosis),
-      spentTotal: categoryDTO.spentTotal,
-      earnedTotal: categoryDTO.earnedTotal,
+      color: categoryDTO.category.color,
+      prognosis: parseInt(categoryDTO.category.prognosis),
+      spentTotal: parseInt(categoryDTO.spentTotal),
+      earnedTotal: parseInt(categoryDTO.earnedTotal),
     })))
   }
   catch (e) {
     return left(e)
   }
 }
+
+export interface GetGraphCategoriesWithStatsParams {
+  startDate: Date
+  endDate: Date
+}
+export interface GraphCategoryWithStats{
+  categoryTitle: string
+  categoryColor: string
+  spentTotal: number
+  earnedTotal: number
+}
+export type GraphCategoriesWithStats = Array<GraphCategoryWithStats>
+export const getCategoriesWithStatsForGraph = async({ startDate, endDate }: GetGraphCategoriesWithStatsParams): Promise<
+Either<
+unknown,
+GraphCategoriesWithStats
+>> => {
+  try {
+    const response = await axios.get<CategoriesWithStatsDTO>(`${URL_CONFIG.CATEGORIES.STATISTICS}`, {
+      withCredentials: true,
+      params: {
+        date_from: mapDateToDTO(startOfMonth(startDate)),
+        date_to: mapDateToDTO(endOfMonth(endDate)),
+        isDaily: false,
+      },
+    })
+    return right(response.data.map(categoryDTO => ({
+      categoryTitle: categoryDTO.category.title,
+      categoryColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+      spentTotal: parseInt(categoryDTO.spentTotal),
+      earnedTotal: parseInt(categoryDTO.earnedTotal),
+    })))
+  }
+  catch (e) {
+    return left(e)
+  }
+}
+
 export interface PatchCategoryParams {
   id: number
   title: string
   prognosis: number
+  color: string
 }
 export const editCategory = async(data: PatchCategoryParams): Promise<
 Either<
@@ -121,6 +163,7 @@ true
 export interface PostCategoryParams {
   title: string
   prognosis: number
+  color: string
 }
 export const createCategory = async(data: PostCategoryParams): Promise<
 Either<

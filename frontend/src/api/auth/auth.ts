@@ -7,7 +7,6 @@ import type { Static } from 'runtypes'
 import { Literal, Union } from 'runtypes'
 import axios from '@/api'
 import URL_CONFIG from '@/api/urls.config'
-import { getCookie } from '@/utils/cookie'
 import { getErrorsList } from '@/utils/api'
 
 export const WeakPasswordError = Union(
@@ -72,19 +71,34 @@ RegistrationSuccessDTO
 export const InvalidCredentialsError = Literal('Invalid credentials.')
 
 export const authUser = async(credentials: {
-  password: string
 }):
 Promise<
 Either<
-| Static<typeof InvalidCredentialsError>,
+Static<typeof InvalidCredentialsError>,
 true
 >> => {
   try {
-    await axios.post(`${URL_CONFIG.AUTH.LOGIN}/`, credentials, {
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken')!,
-      },
-    })
+    await axios.post(`${URL_CONFIG.AUTH.LOGIN}/`, credentials)
+    return right(true)
+  }
+  catch (error: AxiosError | unknown) {
+    if (axiosUtils.isAxiosError(error)) {
+      if (error.response)
+        return left(InvalidCredentialsError.value)
+    }
+
+    throw error
+  }
+}
+
+export const checkUserAuth = async():
+Promise<
+Either<
+unknown,
+true
+>> => {
+  try {
+    await axios.get(`${URL_CONFIG.AUTH.CHECK}/`)
     return right(true)
   }
   catch (error: AxiosError | unknown) {

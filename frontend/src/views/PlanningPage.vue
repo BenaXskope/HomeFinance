@@ -43,10 +43,10 @@ const categoryProgress = (category: CategoryWithStats) => selectedType.value ? c
   <h1 class="text-primary-semi-dark mb-4">
     Планирование
   </h1>
-  <Calendar id="month" v-model="month" view="month" date-format="MM yy" :manual-input="false" class="mb-4" />
+  <Calendar id="month" v-model="month" view="month" date-format="MM yy" :manual-input="false" class="mb-4" show-icon />
 
   <SelectButton v-model="selectedType" :options="statisticsTypes" option-label="label" option-value="value" class="mb-4" />
-  <ProgressBar v-if="isLoading" />
+  <ProgressSpinner v-if="isLoading" />
   <div class="flex flex-column">
     <router-link
       v-for="category of categories"

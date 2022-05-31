@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { useStorage } from '@vueuse/core'
+import Calendar from 'primevue/calendar'
+import InputText from 'primevue/inputtext'
+import SelectButton from 'primevue/selectbutton'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
+import { FilterMatchMode } from 'primevue/api'
 
 import RecordTypeTag from '@components/common/RecordTypeTag.vue'
 
@@ -14,14 +19,33 @@ import type { PayoutsList } from '@api/payouts/payouts'
 
 const props = defineProps<{
   category?: number | string
-  isExpense?: boolean
 }>()
+
+const month = useStorage('month', new Date())
+const recordsType = [
+  {
+    label: 'Все',
+    value: null,
+  }, {
+    label: 'Расход',
+    value: true,
+  },
+  {
+    label: 'Доход',
+    value: false,
+  },
+]
+const selectedType = ref(null)
 
 const payouts = ref<PayoutsList>([])
 const isPayoutsListLoading = ref(false)
 const fetchPayouts = async() => {
   isPayoutsListLoading.value = true
-  const fetchedPayouts = await getPayouts({ ...props })
+  const fetchedPayouts = await getPayouts({
+    month: month.value,
+    category: props.category,
+    isExpense: selectedType.value ?? undefined,
+  })
 
   if (fetchedPayouts.isRight())
     payouts.value = fetchedPayouts.value
@@ -29,7 +53,9 @@ const fetchPayouts = async() => {
   isPayoutsListLoading.value = false
 }
 await fetchPayouts()
+watch([month, props.category, selectedType], fetchPayouts)
 
+const filters = reactive({ categoryTitle: { value: undefined, matchMode: FilterMatchMode.CONTAINS } })
 const expandedRows = ref([])
 
 const toast = useToast()
@@ -53,14 +79,29 @@ const handleDelete = (id: number) => {
 </script>
 <template>
   <ConfirmDialog />
+
   <DataTable
     v-model:expandedRows="expandedRows"
+    v-model:filters="filters"
     :value="payouts"
-    :paginator="true" class="p-datatable-customers" :rows="8"
+    :paginator="true" class="p-datatable-customers" :rows="7"
     :loading="isPayoutsListLoading"
     data-key="id"
     row-hover
   >
+    <template #header>
+      <div class="flex flex-column md:flex-row justify-content-between md:align-items-center">
+        <div v-if="category === undefined" class="p-input-icon-left mb-2 md:mb-0">
+          <i class="pi pi-search" />
+          <InputText v-model="filters['categoryTitle'].value" placeholder="Поиск по категории" />
+        </div>
+        <SelectButton v-model="selectedType" :options="recordsType" option-label="label" option-value="value" class="mb-2 md:mb-0" />
+        <div class="p-input-icon-left">
+          <i class="pi pi-search" />
+          <Calendar id="month" v-model="month" view="month" date-format="MM yy" :manual-input="false" show-icon />
+        </div>
+      </div>
+    </template>
     <Column style="flex-shrink: 0; flex-grow: 0; flex-basis: 3em;" expander />
     <Column field="amount" header="Сумма">
       <template #body="{data}">

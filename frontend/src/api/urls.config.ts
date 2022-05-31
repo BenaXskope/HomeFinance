@@ -5,6 +5,7 @@ export default {
   AUTH: {
     REGISTER: `${BASE_URL}/register`,
     LOGIN: `${BASE_URL}/login`,
+    CHECK: `${BASE_URL}/test-auth`,
   },
   CATEGORIES: {
     BASE: `${BASE_URL}/category`,
@@ -18,5 +19,8 @@ export default {
   },
   CURRENCIES: {
     BASE: `${BASE_URL}/currency`,
+  },
+  GRAPH_POINTS: {
+    BASE: `${BASE_URL}/graph_points`,
   },
 }

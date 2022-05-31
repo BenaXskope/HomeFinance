@@ -3,9 +3,11 @@ import axiosUtils from 'axios'
 import type { AxiosError } from 'axios'
 import { left, right } from '@sweet-monads/either'
 import type { Either } from '@sweet-monads/either'
+import { endOfMonth, startOfMonth } from 'date-fns'
 import type { CategoryDTO } from '@api/categories/categories'
 import URL_CONFIG from '@api/urls.config'
 import axios from '@/api'
+import { mapDateToDTO } from '@/utils/api'
 
 interface PayoutDTO {
   id: number
@@ -31,6 +33,7 @@ export interface Payout {
 export type PayoutsList = Array<Payout>
 
 interface GetPayoutFilterParams {
+  month: Date
   category?: number | string
   isExpense?: boolean
 }
@@ -44,6 +47,8 @@ PayoutsList
     const response = await axios.get<PayoutListDTO>(`${URL_CONFIG.PAYOUTS.BASE}?expand=category`, {
       withCredentials: true,
       params: {
+        date_from: mapDateToDTO(startOfMonth(filterParams.month)),
+        date_to: mapDateToDTO(endOfMonth(filterParams.month)),
         category: filterParams.category,
         isExpenditure: typeof filterParams.isExpense === 'undefined' ? null : +filterParams.isExpense,
       },

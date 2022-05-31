@@ -26,28 +26,45 @@ watch(isDesktop, () => isMenuShown.value = isDesktop.value)
 const menuLinks = [
   {
     name: 'Добавить запись',
-    to: '/',
+    to: {
+      name: 'new-record',
+    },
   },
   {
     name: 'Категории',
-    to: '/category',
-  },
-  {
-    name: 'История',
-    to: '/history',
-  },
-  {
-    name: 'Курс валют',
-    to: '/currencies',
+    to: {
+      name: 'category',
+    },
   },
   {
     name: 'Планирование',
-    to: '/planning',
+    to: {
+      name: 'planning',
+    },
   },
+  {
+    name: 'История',
+    to: {
+      name: 'history',
+    },
+  },
+  {
+    name: 'Отчет',
+    to: {
+      name: 'report',
+    },
+  },
+  {
+    name: 'Курс валют',
+    to: {
+      name: 'currencies',
+    },
+  },
+
 ]
 const router = useRouter()
 const logout = () => {
-  router.push('/login')
+  router.push({ name: 'login' })
 }
 </script>
 <template>

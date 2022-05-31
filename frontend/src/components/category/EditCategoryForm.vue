@@ -5,6 +5,7 @@ import { number, object, string } from 'yup'
 import Dropdown from 'primevue/dropdown'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
+import ColorPicker from 'primevue/colorpicker'
 import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
 
@@ -22,6 +23,7 @@ const schema = object({
   id: number().required('Обязательное поле'),
   title: string().required('Обязательное поле'),
   prognosis: number().min(1, 'Сумма должна быть положительной').required('Обязательное поле'),
+  color: string().required(),
 })
 
 const { handleSubmit } = useForm({
@@ -31,6 +33,7 @@ const { handleSubmit } = useForm({
 const { value: id, errorMessage: idError } = useField<number>('id')
 const { value: title, errorMessage: titleError } = useField<string>('title')
 const { value: prognosis, errorMessage: prognosisError } = useField<number>('prognosis')
+const { value: color } = useField<string>('color')
 
 const toast = useToast()
 const onSubmit = handleSubmit(async(values) => {
@@ -52,12 +55,14 @@ const selectedCategory = computed({
       id: id.value,
       title: title.value,
       prognosis: prognosis.value,
+      color: color.value,
     }
   },
-  set(newValue: { id: number; title: string; prognosis: number }) {
+  set(newValue: { id: number; title: string; prognosis: number; color: string }) {
     id.value = newValue.id
     title.value = newValue.title
     prognosis.value = newValue.prognosis
+    color.value = newValue.color
   },
 })
 </script>
@@ -89,6 +94,12 @@ const selectedCategory = computed({
       <div class="p-error mt-1 h-1rem text-sm">
         {{ prognosisError }}
       </div>
+    </div>
+    <div class="mb-5 flex align-items-center">
+      <div class="mr-2">
+        Выберите цвет
+      </div>
+      <ColorPicker v-model="color" />
     </div>
     <Button label="РЕДАКТИРОВАТЬ" class="p-button-rounded align-self-end" type="submit" />
   </form>
