@@ -274,7 +274,7 @@ def category_stat(request):
                                                            creation_date__range=["2011-01-01", date_to])
         if queryset:
             max_date = queryset.latest('creation_date').creation_date
-            catProgs = models.CategoryPrognosis.objects.get(creation_date=max_date)
+            catProgs = models.CategoryPrognosis.objects.get(categoryId=category, creation_date=max_date)
             prognose = catProgs.value
         else:
             prognose = 0

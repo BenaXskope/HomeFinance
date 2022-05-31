@@ -6,9 +6,14 @@ from django.db import migrations
 
 def fillUp(apps, schema_editor):
     PayOut = apps.get_model("account", "PayOut")
-    Account = apps.get_model("account", "Account")
+    CategoryPrognosis = apps.get_model("account", "CategoryPrognosis")
 
     payouts = PayOut.objects.all()
+    prognoses = CategoryPrognosis.objects.all()
+
+    for prognosis in prognoses:
+        prognosis.creation_date = datetime(year=2022, month=3, day=1)
+        prognosis.save()
 
     for payout in payouts:
         day = random.randint(1, 30)

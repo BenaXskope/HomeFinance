@@ -16,4 +16,10 @@ class Migration(migrations.Migration):
             name='creation_date',
             field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='Дата создания'),
         ),
+
+        migrations.AlterField(
+            model_name='categoryprognosis',
+            name='creation_date',
+            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='Дата создания'),
+        ),
     ]
