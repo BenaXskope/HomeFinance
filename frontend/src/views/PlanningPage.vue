@@ -35,7 +35,7 @@ const fetchCategories = async() => {
 watch(month, fetchCategories)
 await fetchCategories()
 
-const categoryProgress = (category: CategoryWithStats) => selectedType.value ? category.spentTotal : category.earnedTotal
+const categoryProgress = (category: CategoryWithStats) => (selectedType.value ? category.spentTotal : category.earnedTotal)
 </script>
 <template>
   <ConfirmDialog />
@@ -63,7 +63,7 @@ const categoryProgress = (category: CategoryWithStats) => selectedType.value ? c
             </div>
             <div>{{ categoryProgress(category) }}₽ из {{ category.prognosis }}₽</div>
           </div>
-          <ProgressBar :value="categoryProgress(category)" />
+          <ProgressBar :value="categoryProgress(category) / category.prognosis * 100" :show-value="false" />
         </div>
         <ChevronRightIcon class="text-3xl ml-2" />
       </div>

@@ -62,6 +62,9 @@ const menuLinks = [
   },
 
 ]
+
+const isPending = ref(false)
+
 const router = useRouter()
 const logout = () => {
   router.push({ name: 'login' })
@@ -115,10 +118,13 @@ const logout = () => {
         </div>
       </div>
       <hr>
-      <div class="h-full px-1 overflow-y-auto">
+      <div class="h-full px-1 overflow-y-auto relative">
+        <div v-if="isPending" class="bg-black-alpha-30 z-2 absolute top-0 bottom-0 left-0 right-0 flex justify-content-center align-items-center">
+          <ProgressSpinner class="spinner" />
+        </div>
         <router-view v-slot="{ Component }">
           <template v-if="Component">
-            <Suspense>
+            <Suspense @pending="isPending = true" @resolve="isPending = false" @fallback="isPending = false">
               <component :is="Component" />
               <template #fallback>
                 <div class="h-full w-full flex justify-content-center align-items-center">
