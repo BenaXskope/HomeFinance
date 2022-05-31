@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 
-from account.models import Account
+from account.models import Account, Category, CategoryPrognosis
 
 
 @ensure_csrf_cookie
@@ -63,8 +63,24 @@ class RegisterView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        acc = Account(user=user, total=0)
-        acc.save()
+        account = Account(user=user, total=0)
+        account.save()
+        cat = Category(title='Транспорт', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
+        cat = Category(title='Еда', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
+        cat = Category(title='Технкиа', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
+        cat = Category(title='Непрдвиденные расходы', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
         user.backend = settings.AUTHENTICATION_BACKENDS[0]
         login(self.request, user)
 
