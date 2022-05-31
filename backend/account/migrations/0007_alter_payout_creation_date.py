@@ -15,4 +15,10 @@ class Migration(migrations.Migration):
             name='creation_date',
             field=models.DateTimeField(auto_now_add=True, verbose_name='Дата создания'),
         ),
+
+        migrations.AlterField(
+            model_name='categoryprognosis',
+            name='creation_date',
+            field=models.DateTimeField(auto_now_add=True, verbose_name='Дата создания'),
+        ),
     ]

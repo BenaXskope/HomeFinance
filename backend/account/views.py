@@ -89,6 +89,25 @@ class AccountView(FlexFieldsMixin, ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+
+        accountID = serializer.data['id']
+        account = models.Account.objects.get(pk=accountID)
+        cat = models.Category(title='Транспорт', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = models.CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
+        cat = models.Category(title='Еда', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = models.CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
+        cat = models.Category(title='Технкиа', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = models.CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
+        cat = models.Category(title='Непрдвиденные расходы', color='#ffffff', account=account, prognosis=1000)
+        cat.save()
+        catPred = models.CategoryPrognosis(categoryId=cat, value=1000)
+        catPred.save()
         return Response(serializer.data, status=201, headers=headers)
 
     def partial_update(self, request, *args, **kwargs):
@@ -255,7 +274,7 @@ def category_stat(request):
                                                            creation_date__range=["2011-01-01", date_to])
         if queryset:
             max_date = queryset.latest('creation_date').creation_date
-            catProgs = models.CategoryPrognosis.objects.get(creation_date=max_date)
+            catProgs = models.CategoryPrognosis.objects.get(categoryId=category, creation_date=max_date)
             prognose = catProgs.value
         else:
             prognose = 0

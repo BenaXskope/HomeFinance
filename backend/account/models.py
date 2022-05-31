@@ -33,7 +33,7 @@ class Account(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=30, verbose_name="Наименование")
-    color = models.CharField(max_length=7, verbose_name='Цвет', default='#000000')
+    color = models.CharField(max_length=6, verbose_name='Цвет', default='ffffff')
     account = models.ForeignKey(Account, verbose_name="Аккаунт", on_delete=models.CASCADE, related_name="category")
     prognosis = models.DecimalField(verbose_name="Прогноз", max_digits=20, decimal_places=2, blank=False, default=0)
 

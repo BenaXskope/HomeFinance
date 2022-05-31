@@ -30,7 +30,7 @@ class AccountSerializer(FlexFieldsModelSerializer):
 class CategorySerializer(FlexFieldsModelSerializer):
 
     def validate_color(self, value):
-        if not re.match(r'#[0-9A-Fa-f]{6}', value):
+        if not re.match(r'[0-9A-Fa-f]{6}', value):
             raise ValidationError('Invalid color')
         return value
 
