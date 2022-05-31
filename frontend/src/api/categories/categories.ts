@@ -122,7 +122,7 @@ GraphCategoriesWithStats
     })
     return right(response.data.map(categoryDTO => ({
       categoryTitle: categoryDTO.category.title,
-      categoryColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+      categoryColor: categoryDTO.category.color,
       spentTotal: parseInt(categoryDTO.spentTotal),
       earnedTotal: parseInt(categoryDTO.earnedTotal),
     })))
@@ -173,6 +173,31 @@ true
 > => {
   try {
     await axios.post(`${URL_CONFIG.CATEGORIES.BASE}/`, data, { withCredentials: true })
+
+    return right(true)
+  }
+  catch (error: AxiosError | unknown) {
+    if (axiosUtils.isAxiosError(error)) {
+      if (error.response)
+        return left(error)
+    }
+
+    throw error
+  }
+}
+
+interface DeleteCategoryParams {
+  id: number
+}
+export const deleteCategory = async(data: DeleteCategoryParams):
+Promise<
+Either<
+unknown,
+true
+>
+> => {
+  try {
+    await axios.delete(`${URL_CONFIG.CATEGORIES.BASE}/${data.id}/`, { withCredentials: true })
 
     return right(true)
   }

@@ -78,7 +78,7 @@ const spentChartData = computed(() => ({
   labels: categoriesStatistics.value.map(categoryStat => categoryStat.categoryTitle),
   datasets: [{
     data: categoriesStatistics.value.map(categoryStat => categoryStat.spentTotal || 12000),
-    backgroundColor: categoriesStatistics.value.map(categoryStat => categoryStat.categoryColor),
+    backgroundColor: categoriesStatistics.value.map(categoryStat => `#${categoryStat.categoryColor}`),
   }],
 }))
 
@@ -86,7 +86,7 @@ const earnedChartData = computed(() => ({
   labels: categoriesStatistics.value.map(categoryStat => categoryStat.categoryTitle),
   datasets: [{
     data: categoriesStatistics.value.map(categoryStat => categoryStat.earnedTotal || 12000),
-    backgroundColor: categoriesStatistics.value.map(categoryStat => categoryStat.categoryColor),
+    backgroundColor: categoriesStatistics.value.map(categoryStat => `#${categoryStat.categoryColor}`),
   }],
 }))
 

@@ -33,13 +33,14 @@ const { value: prognosis, errorMessage: prognosisError } = useField<number>('pro
 const { value: color } = useField<string>('color')
 
 const toast = useToast()
-const onSubmit = handleSubmit(async(values) => {
+const onSubmit = handleSubmit(async(values, { resetForm }) => {
   if (!schema.isValidSync(values)) return
 
   const result = await createCategory(values)
   if (result.isRight()) {
     toast.add({ severity: 'success', summary: 'Успешно', detail: 'Категория создана', life: 3000 })
     emits('categoryCreated')
+    resetForm()
     return
   }
 

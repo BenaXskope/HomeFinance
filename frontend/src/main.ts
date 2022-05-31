@@ -20,6 +20,7 @@ createApp(App).use(PrimeVue, {
   locale: {
     monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
     monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'],
-
+    accept: 'Да',
+    reject: 'Нет',
   },
 }).use(ToastService).use(ConfirmationService).use(router).use(createPinia()).mount('#app')

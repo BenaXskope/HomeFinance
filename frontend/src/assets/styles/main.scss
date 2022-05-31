@@ -81,7 +81,7 @@ input[type=number] {
   border-radius: 0;
 }
 
-.p-button:hover {
+.p-button:hover:not(.p-button-danger) {
   background-color: var(--primary-semi-dark-color) !important;
   border-color: var(--primary-semi-dark-color) !important;
 }
