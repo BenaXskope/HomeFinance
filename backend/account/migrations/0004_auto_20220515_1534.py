@@ -19,7 +19,7 @@ def fillUp(apps, schema_editor):
         ac.currencies.add(Currency.objects.get(let_code='EUR'))
 
         prognose = random.randint(1, 50)*1000
-        cat = Category(title='Еда', color='#5cdb95', account=ac, prognosis=prognose)
+        cat = Category(title='Еда', color='5cdb95', account=ac, prognosis=prognose)
         cat.save()
         catPred = CategoryPrognosis(categoryId=cat, value=prognose)
         catPred.save()
@@ -39,7 +39,7 @@ def fillUp(apps, schema_editor):
 
 
         prognose = random.randint(1, 50) * 1000
-        cat = Category(title='Транспорт', color='#d79922', account=ac, prognosis=prognose)
+        cat = Category(title='Транспорт', color='d79922', account=ac, prognosis=prognose)
         cat.save()
         catPred = CategoryPrognosis(categoryId=cat, value=prognose)
         catPred.save()
@@ -59,7 +59,7 @@ def fillUp(apps, schema_editor):
 
 
         prognose = random.randint(1, 50) * 1000
-        cat = Category(title='Технкиа', color='#05386b', account=ac, prognosis=prognose)
+        cat = Category(title='Технкиа', color='05386b', account=ac, prognosis=prognose)
         cat.save()
         catPred = CategoryPrognosis(categoryId=cat, value=prognose)
         catPred.save()
@@ -79,7 +79,7 @@ def fillUp(apps, schema_editor):
 
 
         prognose = random.randint(1, 50) * 1000
-        cat = Category(title='Непрдвиденные расходы', color='#c3073f', account=ac, prognosis=prognose)
+        cat = Category(title='Непрдвиденные расходы', color='c3073f', account=ac, prognosis=prognose)
         cat.save()
         catPred = CategoryPrognosis(categoryId=cat, value=prognose)
         catPred.save()
