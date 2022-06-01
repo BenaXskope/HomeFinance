@@ -10,6 +10,7 @@ const routes = [
   { path: '/planning', name: 'planning', component: () => import('@views/PlanningPage.vue') },
   { path: '/planning/:id', name: 'category-details', component: () => import('@views/CategoryHistoryPage.vue') },
   { path: '/report', name: 'report', component: () => import('@views/ReportPage.vue') },
+  { path: '/help', name: 'help', component: () => import('@views/HelpPage.vue') },
 ]
 
 const router = createRouter({

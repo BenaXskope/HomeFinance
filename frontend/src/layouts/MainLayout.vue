@@ -60,6 +60,12 @@ const menuLinks = [
       name: 'currencies',
     },
   },
+  {
+    name: 'Помощь',
+    to: {
+      name: 'help',
+    },
+  },
 
 ]
 
@@ -113,7 +119,7 @@ const logout = () => {
           {{ new Date().toLocaleDateString() }}
         </div>
         <div>
-          <HelpIcon class="topbar-icon" />
+          <HelpIcon class="topbar-icon" @click="$router.push({name: 'help'})" />
           <LogoutIcon class="topbar-icon" @click="logout" />
         </div>
       </div>
